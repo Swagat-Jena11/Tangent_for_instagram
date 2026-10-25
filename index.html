@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#05060f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tangent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-512.png">
+<script>window.TANGENT_STANDALONE=true</script>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+</head><body>
+<title>Tangent for Instagram</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap">
+<style>
+/* Layout: one-screen phone app. Full-bleed 3D canvas, glass panels, fixed bottom tab bar. Single deliberate dark "night sky" look. */
+:root{
+  color-scheme:dark;
+  --bg:#05060f; --panel:#0d1026; --panel2:#151a3a; --line:#262c5a; --text:#eef0ff; --muted:#9097c4; --dim:#646a99;
+  --green:#3DFF8A; --yellow:#FFD93D; --magenta:#FF4FD8; --cyan:#3DE8FF; --danger:#ff6b81;
+  --f-display:"Sora","Segoe UI",system-ui,sans-serif; --f-body:"DM Sans","Segoe UI",system-ui,sans-serif;
+  --nav-h:64px;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--text);font-family:var(--f-body);font-size:14px;overflow:hidden;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button,select,input{font-family:inherit;color:inherit}
+button{cursor:pointer;border:none;background:none}
+a{color:var(--cyan)}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;border-radius:6px}
+.app{position:relative;height:100%;display:flex;flex-direction:column;background:radial-gradient(ellipse at 30% 0%,#161b45 0%,var(--bg) 60%)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-block:10px 6px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.brand{display:flex;align-items:center;gap:9px;font-family:var(--f-display);font-weight:700;font-size:19px;letter-spacing:-.3px}
+.src{font-size:11px;color:var(--muted);margin-top:1px;font-family:var(--f-body);font-weight:500;letter-spacing:0}
+.src.sample{color:var(--yellow)}
+.iconbtn{width:40px;height:40px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);display:grid;place-items:center;flex:none}
+.iconbtn svg{width:20px;height:20px;stroke:var(--text);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.views{position:relative;flex:1;min-height:0}
+.view{position:absolute;inset:0;overflow-y:auto;display:none;padding-block:4px calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 16px);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));scrollbar-width:none}
+.view::-webkit-scrollbar{display:none}
+.view.on{display:block}
+#v-map{padding:0;overflow:hidden;flex-direction:column}
+#v-map.on{display:flex}
+.legend{display:flex;gap:6px;flex-wrap:wrap;padding-block:2px 0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;padding:4px 9px;border-radius:20px;background:rgba(21,26,58,.75);border:1px solid var(--line);color:#c9cdf0;white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;flex:none;display:inline-block}
+.dg{background:var(--green);box-shadow:0 0 8px var(--green)}.dy{background:var(--yellow);box-shadow:0 0 8px var(--yellow)}
+.dm{background:var(--magenta);box-shadow:0 0 8px var(--magenta)}.dc{background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+.mapwrap{position:relative;flex:1;min-height:180px}
+#map{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab;display:block}
+.hint{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:11px;color:var(--dim);pointer-events:none}
+.mapfoot{display:flex;flex-direction:column;gap:10px;padding-block:6px calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 10px);padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px}
+.wcard{display:flex;gap:12px;align-items:center;cursor:pointer;background:linear-gradient(135deg,rgba(255,79,216,.15),var(--panel) 70%);border-color:rgba(255,79,216,.4);width:100%;text-align:left}
+.wcard.star{background:linear-gradient(135deg,rgba(61,232,255,.15),var(--panel) 70%);border-color:rgba(61,232,255,.45)}
+.wic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(255,79,216,.18);flex:none}
+.wcard.star .wic{background:rgba(61,232,255,.18)}
+.eyebrow{font-size:11px;color:var(--muted);letter-spacing:.2px}
+.t2{font-family:var(--f-display);font-size:16px;font-weight:600;margin-top:2px}
+.bar{height:5px;border-radius:5px;background:#1d2148;margin-top:7px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,var(--magenta),var(--green));transition:width .5s}
+.dial .row1{display:flex;justify-content:space-between;align-items:baseline}
+.dial .val{font-family:var(--f-display);font-size:15px;font-weight:600;color:var(--yellow)}
+.dial .cap{font-size:12px;color:#b4b9e0;margin-top:3px;min-height:16px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:30px;background:transparent;margin:4px 0 0}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:6px;background:linear-gradient(90deg,#2a2f5c,var(--yellow))}
+input[type=range]::-moz-range-track{height:6px;border-radius:6px;background:linear-gradient(90deg,#2a2f5c,var(--yellow))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;margin-top:-9px;box-shadow:0 0 0 4px rgba(255,217,61,.35),0 0 18px var(--yellow)}
+input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:#fff;border:none;box-shadow:0 0 0 4px rgba(255,217,61,.35),0 0 18px var(--yellow)}
+.ticks{display:flex;justify-content:space-between;font-size:11px;color:var(--dim)}
+.ticks span.on{color:var(--yellow)}
+.nav{position:absolute;left:0;right:0;bottom:0;z-index:6;display:flex;justify-content:space-around;background:rgba(8,10,26,.96);border-top:1px solid var(--line);padding-block:6px calc(6px + env(safe-area-inset-bottom,0px));padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px));backdrop-filter:blur(10px)}
+.nav button{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--dim);flex:1;padding:4px 0;position:relative}
+.nav button.on{color:var(--text)}
+.nav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav button.on svg{stroke:var(--cyan);filter:drop-shadow(0 0 6px var(--cyan))}
+.badge{position:absolute;top:0;left:calc(50% + 6px);min-width:17px;height:17px;border-radius:9px;background:var(--magenta);color:#14051a;font-size:10px;font-weight:700;display:grid;place-items:center;padding:0 4px}
+h1.pt{font-family:var(--f-display);font-size:23px;font-weight:700;letter-spacing:-.4px;margin:6px 2px 2px;text-wrap:balance}
+.pd{font-size:13px;color:var(--muted);margin:0 2px 14px;line-height:1.5}
+.sect{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin:18px 2px 8px}
+.stack{display:flex;flex-direction:column;gap:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 14px;border-radius:12px;font-size:13.5px;font-weight:600;background:var(--panel2);border:1px solid var(--line);text-decoration:none;color:var(--text)}
+.btn.p{background:var(--text);color:#080a18;border-color:var(--text)}
+.btn.g{background:rgba(61,255,138,.14);border-color:rgba(61,255,138,.5);color:var(--green)}
+.btn.c{background:rgba(61,232,255,.14);border-color:rgba(61,232,255,.5);color:var(--cyan)}
+.btn.d{background:rgba(255,107,129,.12);border-color:rgba(255,107,129,.45);color:var(--danger)}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.acts .btn{flex:1 1 120px}
+.why{font-size:12.5px;color:#c9cdf0;background:rgba(255,255,255,.045);border-radius:10px;padding:9px 11px;line-height:1.5}
+.why b{color:var(--text)}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:12px;padding:6px 10px;border-radius:20px;border:1px solid var(--line);background:var(--panel2);text-decoration:none;color:#d6daf7}
+.metric{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.metric .card{min-width:0}
+.mv{font-family:var(--f-display);font-size:26px;font-weight:700;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+.ml{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.4}
+.wide{grid-column:1/-1}
+.hbar{display:grid;grid-template-columns:minmax(0,1fr) 48px;gap:4px 10px;align-items:center;font-size:13px}
+.hbar .lab{display:flex;align-items:center;gap:8px;min-width:0}
+.hbar .lab span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hbar .num{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+.hbar .trk{grid-column:1/-1;height:5px;border-radius:4px;background:#1b1f45;margin-bottom:6px}
+.hbar .trk i{display:block;height:100%;border-radius:4px;background:var(--green);box-shadow:0 0 8px rgba(61,255,138,.5)}
+.acct{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.acct:last-child{border-bottom:none}
+.acct .nm{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acct .nm a{color:var(--text);text-decoration:none}
+.acct .meta{font-size:11.5px;color:var(--muted)}
+.acct select{grid-column:1/-1;width:100%;padding:9px 10px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);font-size:13px}
+.search{width:100%;padding:11px 12px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);font-size:14px;margin-bottom:10px}
+.field{width:100%;padding:11px 12px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);font-size:13px}
+ol.steps{margin:0;padding-left:20px;line-height:1.6;color:#d6daf7;font-size:13.5px}
+ol.steps li{margin-bottom:4px}
+ol.steps b{color:var(--text)}
+.drop{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:22px 14px;border:1.5px dashed #3a4180;border-radius:16px;background:rgba(61,232,255,.04)}
+.drop.over{border-color:var(--cyan);background:rgba(61,232,255,.1)}
+.prog{font-size:12.5px;color:var(--muted);min-height:18px}
+.note{font-size:12px;color:var(--muted);line-height:1.5}
+.hist{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.hist:last-child{border-bottom:none}
+.empty{color:var(--muted);font-size:13px;text-align:center;padding:18px 6px}
+.banner{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;line-height:1.45;color:#e8e2b8;padding:10px 12px;border-radius:12px;background:rgba(255,217,61,.08);border:1px dashed rgba(255,217,61,.4);margin-bottom:12px}
+.backdrop{position:absolute;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .25s;z-index:8}
+.backdrop.open{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:9;max-height:82%;overflow-y:auto;background:#0d1028;border-top:1px solid var(--line);border-radius:24px 24px 0 0;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);padding-block:10px calc(22px + env(safe-area-inset-bottom,0px));padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
+.sheet.open{transform:none}
+.grab{width:40px;height:5px;border-radius:5px;background:#2e3365;margin:0 auto 12px}
+.sh-t{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-size:21px;font-weight:700}
+.sh-t .dot{width:13px;height:13px}
+.state{display:inline-block;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;margin-top:8px;letter-spacing:.4px}
+.sheet .stack{margin-top:12px}
+.toast{position:absolute;left:16px;right:16px;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 12px);z-index:12;padding:12px 14px;border-radius:14px;background:#1b1f48;border:1px solid #363d7c;font-size:13px;transform:translateY(16px);opacity:0;transition:.3s;pointer-events:none}
+.toast.show{transform:none;opacity:1}
+.mono{font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:reduce){.sheet,.toast,.bar i{transition:none}}
+@media (min-width:720px){.view{padding-left:max(24px,calc(50% - 300px));padding-right:max(24px,calc(50% - 300px))}.mapfoot{padding-left:max(24px,calc(50% - 300px));padding-right:max(24px,calc(50% - 300px))}}
+</style>
+
+<div class="app" id="app">
+  <header class="top">
+    <div>
+      <div class="brand"><svg width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><circle cx="20" cy="26" r="13" fill="none" stroke="#3DFF8A" stroke-width="3.4"/><line x1="4" y1="11" x2="46" y2="11" stroke="#FFD93D" stroke-width="3.4" stroke-linecap="round" transform="rotate(-14 24 13)"/><circle cx="21" cy="13.2" r="4" fill="#FF4FD8"/></svg>Tangent</div>
+      <div class="src" id="srcLine"></div>
+    </div>
+    <button class="iconbtn" id="btnImport" aria-label="Import your Instagram data"><svg viewBox="0 0 24 24"><path d="M12 15V3"/><path d="M7 8l5-5 5 5"/><path d="M4 15v4a2 2 0 002 2h12a2 2 0 002-2v-4"/></svg></button>
+  </header>
+
+  <main class="views">
+    <!-- MAP -->
+    <section class="view on" id="v-map" aria-label="Interest map">
+      <div class="legend">
+        <span class="chip"><span class="dot dg"></span>Your world</span>
+        <span class="chip"><span class="dot dy"></span>Within reach</span>
+        <span class="chip"><span class="dot dm"></span>This month</span>
+        <span class="chip"><span class="dot dc"></span>North Star</span>
+      </div>
+      <div class="mapwrap" id="mapwrap"><canvas id="map" aria-label="3D map of your interests"></canvas><div class="hint">Drag to rotate · pinch to zoom · tap a node</div></div>
+      <div class="mapfoot">
+        <button class="card wcard" id="wcard"></button>
+        <div class="card dial">
+          <div class="row1"><span class="eyebrow">Exploration dial</span><span class="val" id="dialVal">Nudge</span></div>
+          <div class="cap" id="dialCap"></div>
+          <input type="range" id="dial" min="0" max="3" step="1" value="1" aria-label="Exploration dial">
+          <div class="ticks" id="ticks"><span>Off</span><span>Nudge</span><span>Wander</span><span>Surprise me</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TANGENT -->
+    <section class="view" id="v-tan" aria-label="This month's Tangent">
+      <h1 class="pt">This month's Tangent</h1>
+      <p class="pd">On the 1st of every month, Tangent picks one new niche next to what you already love. Explore it four times and it joins your world. If it sticks for 30 days, it becomes a North Star.</p>
+      <div id="tanBody" class="stack"></div>
+      <div class="sect">History</div>
+      <div class="card" id="tanHist"></div>
+    </section>
+
+    <!-- SORT -->
+    <section class="view" id="v-sort" aria-label="Sort accounts">
+      <h1 class="pt">Sort accounts</h1>
+      <p class="pd" id="sortDesc"></p>
+      <div class="card stack" id="aiCard" style="margin-bottom:12px"></div>
+      <input class="search" id="sortSearch" type="search" placeholder="Search accounts" aria-label="Search accounts">
+      <div class="card" id="sortList"></div>
+    </section>
+
+    <!-- INSIGHTS -->
+    <section class="view" id="v-ins" aria-label="Insights">
+      <h1 class="pt">Is your world shrinking?</h1>
+      <p class="pd">Measured from your own Instagram activity, independently of the app's algorithm.</p>
+      <div class="metric" id="insMetrics"></div>
+      <div class="sect">Breadth of your world</div>
+      <div class="card"><div class="ml" style="margin:0 0 6px">Distinct interests you engaged with each month</div><svg id="chart" viewBox="0 0 340 170" style="width:100%;display:block" role="img" aria-label="Line chart of interest breadth by month"></svg></div>
+      <div class="sect">Where your attention goes</div>
+      <div class="card hbar" id="insTop"></div>
+      <div class="sect">What Instagram thinks you like</div>
+      <div class="card" id="insTopics"></div>
+      <div class="sect">What was read from your export</div>
+      <div class="card" id="insSrc"></div>
+    </section>
+
+    <!-- IMPORT -->
+    <section class="view" id="v-imp" aria-label="Import data">
+      <h1 class="pt">Bring in your Instagram</h1>
+      <p class="pd">Your export is read on this phone only. Nothing is uploaded anywhere.</p>
+      <div class="sect" style="margin-top:4px">1. Request your export</div>
+      <div class="card">
+        <ol class="steps">
+          <li>In Instagram, open <b>Settings → Accounts Center → Your information and permissions → Export your information</b>.</li>
+          <li>Tap <b>Create export</b>, pick your profile, then <b>Export to device</b>.</li>
+          <li>Under <b>Customize information</b>, keep <b>Your Instagram activity</b>, <b>Connections</b>, <b>Preferences</b> and <b>Ads information</b>. Untick <b>Messages</b> and media to keep the file small.</li>
+          <li>Set <b>Format: JSON</b> and <b>Date range: All time</b>, then start the export.</li>
+          <li>When Instagram notifies you, download the ZIP to this phone.</li>
+        </ol>
+      </div>
+      <div class="sect">2. Open it here</div>
+      <label class="drop" id="drop" for="file">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#3DE8FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M7 8l5-5 5 5"/><path d="M4 15v4a2 2 0 002 2h12a2 2 0 002-2v-4"/></svg>
+        <span style="font-weight:600">Choose the ZIP file</span>
+        <span class="note">or the JSON files from inside it</span>
+        <input type="file" id="file" accept=".zip,.json,application/zip,application/json" multiple hidden>
+      </label>
+      <div class="prog" id="prog" style="margin-top:8px" aria-live="polite"></div>
+      <div class="sect">Your data</div>
+      <div class="card stack">
+        <div class="note" id="dataNote"></div>
+        <div class="acts"><button class="btn" id="btnSample">Load sample data</button><button class="btn d" id="btnClear">Delete my data</button></div>
+      </div>
+      <div class="sect">About</div>
+      <div class="card note">Concept and product design by Swagat Kumar Jena. Built with the help of Claude (Anthropic). Interest matching is approximate; fix anything wrong in Sort.</div>
+    </section>
+  </main>
+
+  <nav class="nav" aria-label="Main">
+    <button class="on" data-v="v-map"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="12" cy="17" r="2.5"/><path d="M8.3 8.2l2.6 6.6M15.8 7.6l-2.7 7.3M8.5 6.8l7-.6"/></svg>Map</button>
+    <button data-v="v-tan"><svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="2.5"/></svg>Tangent</button>
+    <button data-v="v-sort"><svg viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Sort<span class="badge" id="sortBadge" hidden></span></button>
+    <button data-v="v-ins"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M6 15l4-5 3 3 5-7"/></svg>Insights</button>
+  </nav>
+
+  <div class="backdrop" id="backdrop"></div>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+  <div class="toast" id="toast" role="status"></div>
+</div>
+
+<script>
+"use strict";
+/* ================= Taxonomy ================= */
+// id: [label, keywords, explore hashtags, neighbours]
+const TAX = {
+ cricket:["Cricket","cricket ipl iplt20 bcci icc wicket t20 odi cricbuzz kohli dhoni rohitsharma testcricket","cricket ipl","sportsdata sports football news"],
+ football:["Football","football soccer fifa premierleague laliga uefa messi ronaldo fcbarcelona realmadrid manutd isl","football","sports fitness"],
+ f1:["Formula 1 & Motorsport","formula1 f1 motorsport ferrari mclaren redbullracing motogp","formula1 motorsport","cars engineering sports"],
+ sports:["Sports","sports espn olympics nba tennis athlete badminton kabaddi hockey","sports","fitness cricket football chess"],
+ sportsdata:["Sports Analytics","sportsanalytics cricketstats statsguru fantasy dream11 analytics","sportsanalytics","cricket datasci football"],
+ fitness:["Fitness","fitness gym workout bodybuilding calisthenics running marathon crossfit","fitness calisthenics","nutrition sports dance"],
+ nutrition:["Nutrition","nutrition diet protein healthyfood mealprep healthyeating","healthyfood mealprep","cooking fitness"],
+ cooking:["Cooking","recipe recipes cooking chef kitchen baking masterchef homecooking","homecooking recipes","food nutrition gardening"],
+ food:["Food & Eating Out","food foodie eats streetfood zomato swiggy restaurant cafe biryani foodblogger","streetfood foodie","cooking travel culture"],
+ travel:["Travel","travel wanderlust backpacking trip tourism travelgram nomad trekking himalaya","travel trekking","photography nature culture food"],
+ nature:["Nature & Wildlife","nature wildlife natgeo earth forest ocean animals marine","wildlife nature","photography travel birds gardening pets"],
+ birds:["Birdwatching","birding birdwatching birds ornithology audubon birder","birdwatching birding","nature photography gardening"],
+ gardening:["Gardening","garden gardening plants houseplant bonsai urbanjungle","gardening bonsai","nature cooking crafts"],
+ pets:["Pets","pets dog dogs cat cats puppy kitten doggo","dogsofinstagram","nature memes"],
+ photography:["Photography","photography photographer photo shotonphone lens canon nikon sonyalpha lightroom streetphotography","streetphotography photography","astro travel art movies nature"],
+ astro:["Astrophotography","astrophotography astro milkyway nightsky telescope deepsky","astrophotography milkyway","space photography birds"],
+ space:["Space","nasa spacex isro esa space cosmos universe astronomy hubble jwst rocket","space astronomy","astro science engineering"],
+ science:["Science","science physics chemistry biology scientific sciencefacts kurzgesagt","science physics","space tech philosophy edu"],
+ tech:["Tech & Gadgets","tech gadget gadgets apple android samsung iphone unboxing techreview","tech gadgets","coding ai gaming startup"],
+ coding:["Coding","code coding coder programming developer python javascript leetcode github linux software webdev","coding programming","tech ai gamedev datasci cybersec"],
+ ai:["AI","ai artificialintelligence machinelearning openai deeplearning chatgpt llm anthropic","artificialintelligence machinelearning","coding tech philosophy datasci"],
+ datasci:["Data Science","datascience dataviz statistics kaggle dataanalytics","datascience dataviz","coding ai sportsdata"],
+ cybersec:["Cybersecurity","cybersecurity hacking infosec ethicalhacking hacker ctf","cybersecurity infosec","coding tech"],
+ gaming:["Gaming","gaming gamer playstation xbox nintendo valorant bgmi pubg minecraft esports twitch gta","gaming","gamedev tech anime chess"],
+ gamedev:["Game Development","gamedev indiegame indiedev unity unrealengine pixelart","gamedev indiedev","gaming coding art"],
+ anime:["Anime & Manga","anime manga otaku naruto onepiece","anime","gaming art comics"],
+ comics:["Comics","comics marvel dccomics superhero graphicnovel","comics","anime movies books"],
+ movies:["Movies & TV","movie movies film cinema netflix bollywood hollywood imdb primevideo series","cinema movies","docs music comics"],
+ docs:["Documentaries","documentary documentaries docuseries docu","documentary","history science journalism nature"],
+ history:["History","history historical ancient archaeology heritage museum","history archaeology","warhistory culture docs mythology architecture"],
+ warhistory:["War History","warhistory military ww2 ww1 wwii worldwar army navy airforce defence defense warfare","militaryhistory","history geopolitics aviation"],
+ aviation:["Aviation","aviation aircraft airplane pilot avgeek fighterjet airbus boeing","aviation avgeek","warhistory engineering travel"],
+ engineering:["Engineering","engineering engineer mechanical robotics drone drones aerospace","engineering robotics","aviation space tech diy"],
+ geopolitics:["Geopolitics","geopolitics worldaffairs foreignpolicy diplomacy internationalrelations","geopolitics","news warhistory economics"],
+ news:["News","news ndtv aajtak bbc cnn reuters thehindu timesofindia indiatoday theprint wion breakingnews","news","geopolitics journalism economics"],
+ journalism:["Journalism","journalism journalist investigative reporter","journalism","news docs books"],
+ economics:["Economics","economics economy","economics","finance geopolitics"],
+ finance:["Finance & Investing","finance investing invest stocks trading sharemarket stockmarket crypto zerodha personalfinance","personalfinance investing","economics startup"],
+ startup:["Startups","startup startups entrepreneur founder business ycombinator sharktank","startup entrepreneur","finance tech campus"],
+ campus:["College & Campus","iit iitk iitb iitd iitm nit college campus university univ alumni","campuslife","startup coding edu"],
+ edu:["Learning & Exams","education study learn upsc jee gate exam studygram neet","studygram","campus science books"],
+ wallpapers:["Wallpapers","wallpaper wallpapers amoled backgrounds","wallpaper amoled","art photography design"],
+ art:["Digital Art","digitalart illustration artist art drawing procreate conceptart","digitalart illustration","design wallpapers anime gamedev crafts"],
+ design:["Design","design graphicdesign uiux typography logo branding","graphicdesign typography","art architecture fashion"],
+ architecture:["Architecture","architecture interiors interiordesign buildings","architecture","design history travel"],
+ music:["Music","music song singer rapper guitar piano spotify beats producer lofi","music","movies dance"],
+ dance:["Dance","dance dancer choreography","dance","music fitness"],
+ memes:["Memes & Comedy","meme memes funny comedy humor standup trolls","comedy","movies gaming pets"],
+ fashion:["Fashion","fashion style outfit streetwear sneakers","streetwear","design photography"],
+ cars:["Cars & Bikes","cars car supercar motorcycle bikes bmw porsche automobile","cars","f1 engineering"],
+ philosophy:["Philosophy","philosophy stoic stoicism wisdom philosopher","philosophy stoicism","psychology books science"],
+ psychology:["Psychology","psychology psych behavioral behavioural","psychology","philosophy books"],
+ books:["Books","books bookstagram reading novel literature poetry writer","bookstagram","philosophy history journalism"],
+ mythology:["Mythology","mythology mythological mahabharata ramayana greekmythology norse","mythology","history books culture"],
+ culture:["Culture & Heritage","culture incredibleindia heritage festival folk tradition","incredibleindia","travel history food"],
+ chess:["Chess","chess chesscom lichess grandmaster","chess","gaming sports philosophy"],
+ diy:["DIY & Making","diy maker electronics arduino raspberrypi 3dprinting woodworking","diy arduino","engineering coding crafts"],
+ crafts:["Crafts","pottery ceramics crafts handmade calligraphy embroidery","pottery calligraphy","art diy gardening"],
+};
+const CAT = {}; const ADJ = {};
+for (const [id,[label,kw,tags,nb]] of Object.entries(TAX)) { CAT[id]={id,label,kw:kw.split(' '),tags:tags.split(' ')}; ADJ[id]=ADJ[id]||new Set(); }
+for (const [id,v] of Object.entries(TAX)) for (const n of v[3].split(' ')) { if(!CAT[n]) continue; ADJ[id].add(n); ADJ[n].add(id); }
+const LONG_KW=[], SHORT_KW={};
+for (const c of Object.values(CAT)) for (const k of c.kw) { if (k.length>=4) LONG_KW.push([k,c.id]); else (SHORT_KW[k]=SHORT_KW[k]||[]).push(c.id); }
+LONG_KW.sort((a,b)=>b[0].length-a[0].length);
+
+function matchName(name){
+  const n=name.toLowerCase(), out=new Set(); let rest=n;
+  for (const [k,id] of LONG_KW) if (rest.includes(k)) { out.add(id); rest=rest.split(k).join(' '); }
+  for (const t of [...n.split(/[._\-]+/),...n.split(/[._\-\d]+/)]) if (SHORT_KW[t]) SHORT_KW[t].forEach(id=>out.add(id));
+  return [...out].slice(0,2);
+}
+function matchText(text){
+  const out=new Set();
+  for (const w of String(text).toLowerCase().split(/[^a-z0-9]+/)) {
+    if (!w) continue;
+    if (SHORT_KW[w]) SHORT_KW[w].forEach(id=>out.add(id));
+    for (const [k,id] of LONG_KW) if (w===k || (k.length>=5 && w.includes(k))) out.add(id);
+  }
+  return [...out];
+}
+
+/* ================= Storage ================= */
+const KEY='tangent-ig-v1';
+function load(){ try{ const s=localStorage.getItem(KEY); return s?JSON.parse(s):null; }catch(e){ return null; } }
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); return true; }catch(e){ return false; } }
+let S = load();
+
+/* ================= ZIP reader (lazy, on-device) ================= */
+async function zipEntries(file){
+  const tl=Math.min(file.size,65557), base=file.size-tl;
+  const tail=new DataView(await file.slice(base).arrayBuffer());
+  let e=-1; for (let i=tl-22;i>=0;i--) if (tail.getUint32(i,true)===0x06054b50){e=i;break;}
+  if (e<0) throw new Error('This does not look like a ZIP file.');
+  let count=tail.getUint16(e+10,true), cdSize=tail.getUint32(e+12,true), cdOff=tail.getUint32(e+16,true);
+  if (cdOff===0xffffffff||count===0xffff||cdSize===0xffffffff){
+    const L=e-20; if (L>=0 && tail.getUint32(L,true)===0x07064b50){
+      const off=Number(tail.getBigUint64(L+8,true));
+      const z=new DataView(await file.slice(off,off+56).arrayBuffer());
+      count=Number(z.getBigUint64(32,true)); cdSize=Number(z.getBigUint64(40,true)); cdOff=Number(z.getBigUint64(48,true));
+    }
+  }
+  const cd=new DataView(await file.slice(cdOff,cdOff+cdSize).arrayBuffer()), dec=new TextDecoder();
+  const out=[]; let p=0;
+  for (let k=0;k<count && p+46<=cd.byteLength;k++){
+    if (cd.getUint32(p,true)!==0x02014b50) break;
+    const method=cd.getUint16(p+10,true); let comp=cd.getUint32(p+20,true), unc=cd.getUint32(p+24,true);
+    const nl=cd.getUint16(p+28,true), xl=cd.getUint16(p+30,true), cl=cd.getUint16(p+32,true); let lo=cd.getUint32(p+42,true);
+    const name=dec.decode(new Uint8Array(cd.buffer,cd.byteOffset+p+46,nl));
+    let x=p+46+nl; const xe=x+xl;
+    while (x+4<=xe){ const id=cd.getUint16(x,true), sz=cd.getUint16(x+2,true); if(id===1){ let q=x+4;
+        if(unc===0xffffffff){unc=Number(cd.getBigUint64(q,true));q+=8;}
+        if(comp===0xffffffff){comp=Number(cd.getBigUint64(q,true));q+=8;}
+        if(lo===0xffffffff){lo=Number(cd.getBigUint64(q,true));q+=8;} }
+      x+=4+sz; }
+    out.push({name,method,comp,lo}); p=xe+cl;
+  }
+  return out;
+}
+async function zipText(file,en){
+  const h=new DataView(await file.slice(en.lo,en.lo+30).arrayBuffer());
+  const start=en.lo+30+h.getUint16(26,true)+h.getUint16(28,true);
+  const blob=file.slice(start,start+en.comp);
+  if (en.method===0) return await blob.text();
+  if (en.method!==8) throw new Error('Unsupported compression');
+  if (typeof DecompressionStream==='undefined') throw new Error('This browser cannot unzip files. Update it, or pick the JSON files instead of the ZIP.');
+  return await new Response(blob.stream().pipeThrough(new DecompressionStream('deflate-raw'))).text();
+}
+
+/* ================= Export parsing ================= */
+const fixText=s=>{ if(typeof s!=='string'||!/[\u0080-ÿ]/.test(s)) return s; try{ return decodeURIComponent(escape(s)); }catch(e){ return s; } };
+const WANT=[ // [pattern on path, kind]
+ [/liked_posts|liked_media|likes_media/, 'like'],
+ [/story_likes/, 'like'],
+ [/saved_posts|saved_media|saved_collections/, 'save'],
+ [/(post|reels?)_comments/, 'comment'],
+ [/followers_and_following\/following\.json|\/following\.json$|^following\.json$/, 'follow'],
+ [/following_hashtags/, 'hashtag'],
+ [/videos_watched|reels_watched/, 'watch'],
+ [/posts_viewed|posts_seen/, 'view'],
+ [/your_topics|recommended_topics/, 'topic'],
+ [/content\/(posts_\d+|reels|stories)\.json|\/posts_\d+\.json$/, 'own'],
+];
+function kindFor(path){ const p=path.toLowerCase(); if(/(^|\/)messages\//.test(p)||/followers_\d|\/followers\.json/.test(p)) return null; for(const [re,k] of WANT) if(re.test(p)) return k; return null; }
+function firstTs(o){ if(!o||typeof o!=='object') return 0;
+  if (typeof o.timestamp==='number') return o.timestamp; if (typeof o.creation_timestamp==='number') return o.creation_timestamp;
+  for (const v of Object.values(o)) if (v&&typeof v==='object'){ const t=firstTs(v); if(t) return t; } return 0; }
+function itemsOf(json){ if(Array.isArray(json)) return json; if(json&&typeof json==='object'){ for(const v of Object.values(json)) if(Array.isArray(v)) return v; } return []; }
+function userFromHref(h){ const m=/instagram\.com\/(?:_u\/)?([A-Za-z0-9._]+)\/?$/.exec(h||''); return m?m[1]:''; }
+function parseFile(path,kind,json,acc){
+  const items=itemsOf(json);
+  for (const it of items){
+    if (!it||typeof it!=='object') continue;
+    const sld=Array.isArray(it.string_list_data)?it.string_list_data[0]:null, smd=it.string_map_data||{};
+    const ts=firstTs(it)||0;
+    if (kind==='topic'){ const n=smd.Name?.value||it.title||sld?.value; if(n) acc.topics.push(fixText(n)); continue; }
+    if (kind==='hashtag'){ const n=it.title||sld?.value||userFromHref(sld?.href); if(n) acc.tags.push(fixText(n)); continue; }
+    if (kind==='own'){ const caps=[]; (it.media||[]).forEach(m=>m.title&&caps.push(m.title)); if(it.title) caps.push(it.title);
+      for(const c of caps){ const h=fixText(c).match(/#[\p{L}\p{N}_]+/gu); if(h) acc.tags.push(...h.map(x=>x.slice(1))); } continue; }
+    let u='';
+    if (kind==='follow') u=(it.title&&it.title.trim())||sld?.value||userFromHref(sld?.href);
+    else if (kind==='watch'||kind==='view') u=smd.Author?.value||it.title||'';
+    else if (kind==='comment') u=smd['Media Owner']?.value||it.title||'';
+    else u=it.title||sld?.value||smd.Author?.value||'';
+    u=fixText(String(u||'')).trim().replace(/^@/,'');
+    if (!u||u.length>40) continue;
+    acc.events.push([kind,u,ts]);
+  }
+}
+const KI={like:0,save:1,comment:2,watch:3,view:4,follow:5};
+const KW=[2,3,3,1,0.5,1];
+function aggregate(acc,source){
+  const accounts={}, months={}; let min=Infinity,max=0; const counts={like:0,save:0,comment:0,watch:0,view:0,follow:0,topic:acc.topics.length,hashtag:acc.tags.length};
+  for (const [k,u,ts] of acc.events){
+    const a=accounts[u]||(accounts[u]=[0,0,0,0,0,0]); a[KI[k]]++; counts[k]++;
+    if (ts && k!=='follow'){ const d=new Date(ts*1000), ym=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+      const m=months[ym]||(months[ym]={}); m[u]=(m[u]||0)+KW[KI[k]]; if(ts<min)min=ts; if(ts>max)max=ts; }
+  }
+  const keys=Object.keys(months).sort(); for (const k of keys.slice(0,-18)) delete months[k];
+  return {accounts,months,topics:[...new Set(acc.topics)],tags:[...new Set(acc.tags.map(t=>t.toLowerCase()))],counts,range:[isFinite(min)?min:0,max],source,importedAt:Date.now()};
+}
+async function importFiles(files){
+  const prog=$('#prog'), acc={events:[],topics:[],tags:[]}; let read=0;
+  const handle=async(path,text)=>{ const k=kindFor(path); if(!k) return; try{ parseFile(path,k,JSON.parse(text),acc); read++; }catch(e){} };
+  try{
+    for (const f of files){
+      if (/\.zip$/i.test(f.name)||f.type.includes('zip')){
+        prog.textContent='Reading the ZIP…';
+        const ents=(await zipEntries(f)).filter(e=>/\.json$/i.test(e.name)&&kindFor(e.name));
+        let i=0; for (const en of ents){ i++; prog.textContent=`Reading ${i} of ${ents.length}: ${en.name.split('/').pop()}`; await handle(en.name,await zipText(f,en)); }
+      } else if (/\.json$/i.test(f.name)) { await handle(f.webkitRelativePath||f.name,await f.text()); }
+    }
+  }catch(e){ prog.textContent=e.message||'Could not read that file.'; return; }
+  if (!acc.events.length && !acc.topics.length){ prog.textContent='No likes, saves, follows or topics were found. Check that the export is in JSON format and includes "Your Instagram activity" and "Connections".'; return; }
+  const wasSample=!S||!S.summary||S.summary.source==='sample';
+  const keep=S?{overrides:wasSample?{}:S.overrides,tangents:wasSample?[]:S.tangents,hidden:S.hidden,dial:S.dial,key:S.key}:{};
+  S=Object.assign({overrides:{},tangents:[],hidden:[],dial:1,key:''},keep,{summary:aggregate(acc,'export')});
+  const ok=save();
+  prog.textContent=`Done. Read ${read} files: ${acc.events.length.toLocaleString()} interactions with ${Object.keys(S.summary.accounts).length.toLocaleString()} accounts.`+(ok?'':' Storage is full or blocked, so this view will reset when you close the app.');
+  recompute(true); toast('Your interest map is ready.'); setTimeout(()=>go('v-map'),900);
+}
+
+/* ================= Sample data ================= */
+function sampleSummary(){
+  let seed=7; const r=()=>(seed=(seed*16807)%2147483647)/2147483647;
+  const groups={cricket:['cricket.daily','iplhighlights','cricbuzz.live','test.cricket.archive'],coding:['python.tips','code.with.ravi','leetcode.daily','linux.memes.dev'],
+    gaming:['gaming.clips','bgmi.moments','pc.gamer.hub'],history:['history.unfolded','ancient.history.daily'],warhistory:['ww2.archive','military.history.files'],
+    astro:['astro.nightsky','milkyway.chasers'],wallpapers:['4k.wallpapers.hub','amoled.walls'],campus:['iitk.campus','iitkanpur.memes'],news:['news.minute','thehindu.daily'],
+    docs:['docu.world','documentary.picks'],travel:['travel.india.diaries','himalaya.trekking'],music:['lofi.beats.studio','indie.music.room'],football:['football.tactics.daily'],food:['streetfood.kanpur']};
+  const unknown=['rahul_s','_priya.m','the.daily.chai','aman.verma22','sneha_k','late.night.thoughts','arjun.r','neha.sh','random.reels.hub','vibes.only.in'];
+  const now=new Date(), acc={events:[],topics:['Cricket','Video games','Space and astronomy','History','Programming','News'],tags:['astrophotography','cricket','iitkanpur','warhistory']};
+  for (let mi=11; mi>=0; mi--){
+    const d=new Date(now.getFullYear(),now.getMonth()-mi,10), ts0=d.getTime()/1000;
+    const narrow=mi<5; // last 5 months: fewer interests
+    const active=Object.keys(groups).filter((g,i)=>!narrow||i<7||(i<10&&r()<.35));
+    for (const g of active){ const n=Math.round((narrow&&['cricket','coding','gaming'].includes(g)?14:6)*(.5+r()));
+      for (let k=0;k<n;k++){ const u=groups[g][Math.floor(r()*groups[g].length)]; const kind=r()<.55?'like':r()<.6?'watch':r()<.7?'view':r()<.8?'save':'comment'; acc.events.push([kind,u,ts0+Math.floor(r()*1.8e6)]); } }
+    for (let k=0;k<8;k++) acc.events.push([r()<.6?'like':'watch',unknown[Math.floor(r()*unknown.length)],ts0+Math.floor(r()*1.8e6)]);
+  }
+  for (const g of Object.values(groups)) for (const u of g) acc.events.push(['follow',u,0]);
+  for (const u of unknown) acc.events.push(['follow',u,0]);
+  return aggregate(acc,'sample');
+}
+
+/* ================= Model ================= */
+let M=null; // computed
+const ymNow=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');};
+const accW=a=>a.reduce((s,v,i)=>s+v*KW[i],0);
+function catsOf(u){ const o=S.overrides[u]; if(o) return o[0]==='_ignore'?null:o; return matchName(u); }
+function recompute(rebuild){
+  const sm=S.summary, score={}, acctCats={}, unsorted=[]; let autoN=0;
+  for (const id in CAT) score[id]=0;
+  for (const [u,a] of Object.entries(sm.accounts)){
+    const w=accW(a), cs=catsOf(u); acctCats[u]=cs;
+    if (cs===null) continue;
+    if (!cs.length){ unsorted.push([u,w,a]); continue; }
+    if (!S.overrides[u]) autoN++;
+    for (const c of cs) score[c]+=w/cs.length;
+  }
+  for (const t of sm.topics) { const cs=matchText(t); for (const c of cs) score[c]+=6/cs.length; }
+  for (const t of sm.tags) { const cs=matchText(t); for (const c of cs) score[c]+=3/cs.length; }
+  const total=Object.values(score).reduce((a,b)=>a+b,0)||1;
+  const ranked=Object.keys(score).filter(c=>score[c]>0).sort((a,b)=>score[b]-score[a]);
+  let core=ranked.filter(c=>score[c]/total>=0.025).slice(0,12); if (core.length<3) core=ranked.slice(0,Math.min(3,ranked.length));
+  const hidden=new Set(S.hidden||[]);
+  // months → breadth
+  const months=Object.keys(sm.months).sort().slice(-12), breadth=[];
+  const monthCat={};
+  for (const ym of months){ const cw={}; let tot=0;
+    for (const [u,w] of Object.entries(sm.months[ym])){ const cs=acctCats[u]; if(!cs||!cs.length) continue; for(const c of cs){cw[c]=(cw[c]||0)+w/cs.length;} tot+=w; }
+    monthCat[ym]=cw; breadth.push([ym,Object.values(cw).filter(v=>v>=Math.max(2,tot*0.03)).length]); }
+  // lock-in: last 3 months
+  const lw={}; let lt=0; for (const ym of months.slice(-3)) for (const [c,w] of Object.entries(monthCat[ym]||{})){ lw[c]=(lw[c]||0)+w; lt+=w; }
+  const top3=Object.values(lw).sort((a,b)=>b-a).slice(0,3).reduce((a,b)=>a+b,0);
+  M={score,total,ranked,core,acctCats,unsorted:unsorted.sort((a,b)=>b[1]-a[1]),autoN,breadth,monthCat,lock:lt?top3/lt:0,hidden};
+  ensureTangent();
+  // tiers
+  const coreSet=new Set(core), tier={};
+  const stuck=S.tangents.filter(t=>t.status==='stuck').map(t=>t.cat);
+  stuck.forEach(c=>coreSet.add(c)); const cur=curTangent(); if(cur) coreSet.add(cur.cat);
+  // tier 1: up to 10 neighbours of your world, most-connected first; tier 2: up to 8 neighbours of those
+  const conn=(c,set)=>[...ADJ[c]].filter(n=>set.has(n)).length;
+  const t1=Object.keys(CAT).filter(c=>!coreSet.has(c)&&!hidden.has(c)&&conn(c,coreSet)>0).sort((a,b)=>conn(b,coreSet)-conn(a,coreSet)||M.score[b]-M.score[a]).slice(0,10);
+  t1.forEach(c=>tier[c]=1); const t1s=new Set(t1);
+  const t2=Object.keys(CAT).filter(c=>!coreSet.has(c)&&!tier[c]&&!hidden.has(c)&&conn(c,t1s)>0).sort((a,b)=>conn(b,t1s)-conn(a,t1s)).slice(0,8);
+  t2.forEach(c=>tier[c]=2);
+  // far jumps: deterministic pick among the rest
+  const rest=Object.keys(CAT).filter(c=>!coreSet.has(c)&&!tier[c]&&!hidden.has(c));
+  const h=hash(ymNow()+core.join()); rest.sort((a,b)=>hash(a+h)-hash(b+h)); rest.slice(0,6).forEach(c=>tier[c]=3);
+  M.tier=tier; M.coreSet=coreSet;
+  buildGraph(rebuild); renderAll();
+}
+function hash(s){ let h=2166136261; for (let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619);} return h>>>0; }
+
+/* ================= Monthly Tangent ================= */
+const curTangent=()=>S.tangents.find(t=>t.month===ymNow());
+function exportSessions(t){ // interactions with the category since the pick month
+  let w=0; for (const [ym,cw] of Object.entries(M.monthCat)) if (ym>=t.month) w+=cw[t.cat]||0; return Math.min(4,Math.floor(w/3)); }
+function progress(t){ return Math.min(1,(t.sessions.length+exportSessions(t))/4); }
+function ensureTangent(){
+  const now=ymNow();
+  for (const t of S.tangents) if (t.month<now && t.status==='active') t.status = progress(t)>=1 ? 'ask' : 'lapsed';
+  if (curTangent()) return;
+  const coreSet=new Set(M.core), used=new Set(S.tangents.map(t=>t.cat)), hidden=M.hidden;
+  const cand=Object.keys(CAT).filter(c=>!coreSet.has(c)&&!used.has(c)&&!hidden.has(c)&&M.score[c]<M.total*0.01)
+    .map(c=>[c,[...ADJ[c]].filter(n=>coreSet.has(n)).length]).filter(x=>x[1]>0);
+  if (!cand.length) return;
+  const best=Math.max(...cand.map(x=>x[1])), pool=cand.filter(x=>x[1]>=Math.min(2,best)).map(x=>x[0]).sort();
+  const pick=pool[hash(now+M.core.join())%pool.length];
+  S.tangents.push({month:now,cat:pick,sessions:[],status:'active'}); save();
+}
+function tangentWhy(c){ const via=[...ADJ[c]].filter(n=>M.coreSet.has(n)&&M.core.includes(n)).map(n=>CAT[n].label);
+  return via.length? `It sits next to ${listJoin(via.slice(0,3))}, which you already spend time on.` : 'It is one step outside your usual world.'; }
+const listJoin=a=>a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a[a.length-1];
+function exploreToday(){ const t=curTangent(); if(!t) return; const d=new Date().toISOString().slice(0,10);
+  if (t.sessions.includes(d)){ toast('Already counted today. Come back tomorrow.'); return; }
+  t.sessions.push(d); save(); const p=progress(t);
+  toast(p>=1?`${CAT[t.cat].label} is now part of your world.`:`Nice. ${CAT[t.cat].label} is warming up on your map.`); renderAll(); if(sheetNode) openNode(sheetNode); }
+function answerStuck(month,yes){ const t=S.tangents.find(x=>x.month===month); if(!t) return; t.status=yes?'stuck':'dropped'; save();
+  toast(yes?`${CAT[t.cat].label} is now a North Star.`:'Okay. It stays in your history.'); recompute(true); }
+
+/* ================= 3D map ================= */
+const COL={green:'#3DFF8A',yellow:'#FFD93D',magenta:'#FF4FD8',cyan:'#3DE8FF'};
+const hex=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+const mixc=(a,b,t)=>{a=hex(a);b=hex(b);return a.map((v,i)=>Math.round(v+(b[i]-v)*t));};
+const rgba=(c,a)=>`rgba(${c[0]},${c[1]},${c[2]},${Math.max(0,Math.min(1,a))})`;
+let G={nodes:[],edges:[]}, sheetNode=null;
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function nodeState(c){
+  const t=S.tangents.find(x=>x.cat===c&&(x.status==='active'||x.status==='ask'));
+  if (S.tangents.some(x=>x.cat===c&&x.status==='stuck')) return 'star';
+  if (t && t.month===ymNow()) return 'wild';
+  if (M.core.includes(c)) return 'core';
+  if (t) return 'core';
+  return 'reach';
+}
+function buildGraph(rebuild){
+  const ids=[...M.coreSet,...Object.keys(M.tier)];
+  const old=new Map(G.nodes.map(n=>[n.id,n]));
+  const maxS=Math.max(1,...M.core.map(c=>M.score[c]));
+  const nodes=ids.map(id=>{ const st=nodeState(id); const o=old.get(id)||{};
+    return Object.assign(o,{id,label:CAT[id].label,state:st,tier:M.tier[id]||0,
+      size: st==='core'?0.85+0.6*Math.sqrt(M.score[id]/maxS): st==='star'?1.15: st==='wild'?1.25:0.75,
+      alpha:o.alpha||0, ph:o.ph??Math.random()*6.28}); });
+  const byId=new Map(nodes.map(n=>[n.id,n])), edges=[], seen=new Set();
+  for (const n of nodes) for (const m of ADJ[n.id]) if (byId.has(m)){ const k=[n.id,m].sort().join('|'); if(!seen.has(k)){seen.add(k);edges.push({a:n,b:byId.get(m),ph:Math.random()});} }
+  // connect isolated far jumps to the closest node by graph distance
+  for (const n of nodes){ if (edges.some(e=>e.a===n||e.b===n)) continue;
+    const q=[[n.id,0]], vis=new Set([n.id]); let found=null;
+    while(q.length&&!found){ const [c]=q.shift(); for(const m of ADJ[c]){ if(vis.has(m)) continue; vis.add(m); if(byId.has(m)&&m!==n.id){found=m;break;} q.push([m]); } }
+    const tgt=byId.get(found||M.core[0]); if (tgt&&tgt!==n) edges.push({a:n,b:tgt,ph:Math.random(),far:true}); }
+  if (rebuild || nodes.some(n=>n.x===undefined)) layout(nodes,edges);
+  G={nodes,edges,byId};
+}
+function layout(nodes,edges){
+  let seed=11; const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+  nodes.forEach(n=>{n.x=(rnd()-.5)*160;n.y=(rnd()-.5)*160;n.z=(rnd()-.5)*160;n.vx=n.vy=n.vz=0;});
+  for (let it=0;it<420;it++){
+    for (let i=0;i<nodes.length;i++) for (let j=i+1;j<nodes.length;j++){ const a=nodes[i],b=nodes[j]; let dx=a.x-b.x,dy=a.y-b.y,dz=a.z-b.z; const d2=dx*dx+dy*dy+dz*dz+.01,d=Math.sqrt(d2),f=4200/d2; dx/=d;dy/=d;dz/=d; a.vx+=dx*f;a.vy+=dy*f;a.vz+=dz*f;b.vx-=dx*f;b.vy-=dy*f;b.vz-=dz*f; }
+    for (const e of edges){ const a=e.a,b=e.b; let dx=b.x-a.x,dy=b.y-a.y,dz=b.z-a.z; const d=Math.sqrt(dx*dx+dy*dy+dz*dz)+.01; const L=(a.state==='core'&&b.state==='core')?44:60, f=(d-L)*.03; dx/=d;dy/=d;dz/=d; a.vx+=dx*f;a.vy+=dy*f;a.vz+=dz*f;b.vx-=dx*f;b.vy-=dy*f;b.vz-=dz*f; }
+    for (const n of nodes){ const k=n.tier===0?.02:.006; n.vx-=n.x*k;n.vy-=n.y*k;n.vz-=n.z*k; n.vx*=.6;n.vy*=.6;n.vz*=.6; n.x+=n.vx;n.y+=n.vy;n.z+=n.vz; }
+  }
+  let m=0; nodes.forEach(n=>m=Math.max(m,Math.hypot(n.x,n.y,n.z))); const s=125/(m||1); nodes.forEach(n=>{n.x*=s;n.y*=s;n.z*=s;});
+}
+const cv=document.getElementById('map'), ctx=cv.getContext('2d');
+let W=0,H=0,rotY=.4,rotX=-.25,zoom=1.1,auto=!RM,autoT=0;
+const starsBg=Array.from({length:120},()=>({x:Math.random(),y:Math.random(),r:Math.random()*1.1+.2,p:Math.random()*6}));
+function resize(){ const r=document.getElementById('mapwrap').getBoundingClientRect(), dpr=Math.min(2,window.devicePixelRatio||1); W=r.width;H=r.height; cv.width=W*dpr;cv.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); }
+new ResizeObserver(resize).observe(document.getElementById('mapwrap'));
+function nodeRGB(n){ if(n.state==='star') return hex(COL.cyan);
+  if(n.state==='wild'){ const t=curTangent(); return mixc(COL.magenta,COL.green,t?progress(t):0); }
+  if(n.state==='reach') return hex(COL.yellow); return hex(COL.green); }
+function targetAlpha(n){ if(n.state==='reach') return n.tier<=S.dial?1:0; return 1; }
+function project(n){ const cy=Math.cos(rotY),sy=Math.sin(rotY),cx=Math.cos(rotX),sx=Math.sin(rotX);
+  const x1=n.x*cy-n.z*sy,z1=n.x*sy+n.z*cy,y1=n.y*cx-z1*sx,z2=n.y*sx+z1*cx, f=380/(380+z2)*zoom*Math.min(W,H)/300;
+  n.px=W/2+x1*f;n.py=H/2+y1*f;n.pz=z2;n.pf=f; }
+function frame(ts){
+  requestAnimationFrame(frame);
+  if (!document.getElementById('v-map').classList.contains('on')||!W||!G.nodes.length) return;
+  const t=RM?0:ts/1000;
+  if (auto) rotY+=.0018; else if (!RM && ts-autoT>2500) auto=true;
+  for (const n of G.nodes){ n.alpha+=(targetAlpha(n)-n.alpha)*.07; project(n); n.df=Math.max(.4,Math.min(1,1-(n.pz+130)/260*.6)); }
+  ctx.globalCompositeOperation='source-over'; ctx.clearRect(0,0,W,H);
+  for (const s of starsBg){ ctx.fillStyle=`rgba(200,210,255,${.15+.15*Math.sin(t+s.p)})`; ctx.beginPath(); ctx.arc(s.x*W,s.y*H,s.r,0,6.28); ctx.fill(); }
+  ctx.globalCompositeOperation='lighter';
+  for (const e of G.edges){ const a=e.a,b=e.b,al=Math.min(a.alpha,b.alpha); if(al<.02) continue;
+    const ca=nodeRGB(a),cb=nodeRGB(b),df=(a.df+b.df)/2,pf=(a.pf+b.pf)/2;
+    const g=ctx.createLinearGradient(a.px,a.py,b.px,b.py); g.addColorStop(0,rgba(ca,.55*al*df)); g.addColorStop(1,rgba(cb,.55*al*df));
+    ctx.strokeStyle=g; ctx.lineWidth=1.3*pf; if(e.far) ctx.setLineDash([3,5]); ctx.beginPath(); ctx.moveTo(a.px,a.py); ctx.lineTo(b.px,b.py); ctx.stroke(); ctx.setLineDash([]);
+    const g2=ctx.createLinearGradient(a.px,a.py,b.px,b.py); g2.addColorStop(0,rgba(ca,.08*al*df)); g2.addColorStop(1,rgba(cb,.08*al*df));
+    ctx.strokeStyle=g2; ctx.lineWidth=4*pf; ctx.beginPath(); ctx.moveTo(a.px,a.py); ctx.lineTo(b.px,b.py); ctx.stroke();
+    const sa=a.state!=='reach', sb=b.state!=='reach';
+    if (!RM && (sa!==sb||a.state==='wild'||b.state==='wild')){ const from=sa?a:b,to=sa?b:a,p=(t*.35+e.ph)%1;
+      const x=from.px+(to.px-from.px)*p,y=from.py+(to.py-from.py)*p,c=mixc(COL.green,to.state==='wild'?COL.magenta:COL.yellow,p),r=5*from.pf;
+      const gg=ctx.createRadialGradient(x,y,0,x,y,r); gg.addColorStop(0,rgba(c,.9*al)); gg.addColorStop(1,rgba(c,0)); ctx.fillStyle=gg; ctx.beginPath(); ctx.arc(x,y,r,0,6.28); ctx.fill(); }
+  }
+  const order=G.nodes.slice().sort((a,b)=>b.pz-a.pz);
+  for (const n of order){ if(n.alpha<.02) continue; const c=nodeRGB(n),al=n.alpha*n.df,r=7.5*n.size*n.pf,ph=n.ph; let p,gm;
+    if(n.state==='core'){p=.5+.5*Math.sin(t*1.3+ph);gm=2.6+.7*p;} else if(n.state==='reach'){p=.5+.5*Math.sin(t*2.1+ph);gm=2.3+.8*p;}
+    else if(n.state==='wild'){p=Math.pow(.5+.5*Math.sin(t*3.2+ph),2);gm=3+1.6*p;} else {p=.5+.5*Math.sin(t*1.6+ph);gm=3.5+p;}
+    const gr=r*gm, g=ctx.createRadialGradient(n.px,n.py,0,n.px,n.py,gr); g.addColorStop(0,rgba(c,.6*al)); g.addColorStop(.3,rgba(c,.2*al)); g.addColorStop(1,rgba(c,0));
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(n.px,n.py,gr,0,6.28); ctx.fill();
+    const g3=ctx.createRadialGradient(n.px-r*.3,n.py-r*.3,0,n.px,n.py,r); g3.addColorStop(0,rgba([255,255,255],.95*al)); g3.addColorStop(.45,rgba(c,.95*al)); g3.addColorStop(1,rgba(c,.5*al));
+    ctx.fillStyle=g3; ctx.beginPath(); ctx.arc(n.px,n.py,r,0,6.28); ctx.fill();
+    if(n.state==='star') for(let k=0;k<2;k++){ const q=(t*.5+ph+k*.5)%1; ctx.strokeStyle=rgba(c,(1-q)*.7*al); ctx.lineWidth=1.6; ctx.beginPath(); ctx.arc(n.px,n.py,r*(1.3+q*2.4),0,6.28); ctx.stroke(); }
+    if(n.state==='wild'){ ctx.save(); ctx.translate(n.px,n.py); ctx.rotate(t*.6); const L=r*(2.2+1.4*p); ctx.strokeStyle=rgba(c,.6*al*(.4+.6*p)); ctx.lineWidth=1.4;
+      for(let k=0;k<4;k++){ ctx.rotate(Math.PI/2); ctx.beginPath(); ctx.moveTo(r*1.2,0); ctx.lineTo(L,0); ctx.stroke(); } ctx.restore(); }
+    if(sheetNode===n.id){ ctx.strokeStyle='rgba(255,255,255,.8)'; ctx.lineWidth=1.5; ctx.setLineDash([3,4]); ctx.beginPath(); ctx.arc(n.px,n.py,r*2.1,0,6.28); ctx.stroke(); ctx.setLineDash([]); }
+  }
+  ctx.globalCompositeOperation='source-over'; ctx.textAlign='center';
+  const boxes=[], pri=n=>(n.id===sheetNode?-1e4:0)+(n.state!=='reach'?-1000:0)+n.pz;
+  for (const n of order.slice().sort((a,b)=>pri(a)-pri(b))){ if(n.alpha<.15) continue; const fs=Math.max(9,10.5*n.pf);
+    ctx.font=`${n.state==='reach'?500:600} ${fs}px "DM Sans",system-ui,sans-serif`;
+    const w=ctx.measureText(n.label).width, y=n.py+7.5*n.size*n.pf+fs+3, b=[n.px-w/2-3,y-fs,n.px+w/2+3,y+3];
+    if (boxes.some(o=>b[0]<o[2]&&b[2]>o[0]&&b[1]<o[3]&&b[3]>o[1])) continue; boxes.push(b);
+    ctx.fillStyle=`rgba(228,232,255,${n.alpha*Math.pow(n.df,1.4)*.95})`; ctx.fillText(n.label,n.px,y); }
+}
+requestAnimationFrame(frame);
+const ptrs=new Map(); let down=null,pinch0=0,zoom0=1;
+cv.addEventListener('pointerdown',e=>{ cv.setPointerCapture(e.pointerId); ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY}); down={moved:0}; auto=false; autoT=performance.now();
+  if(ptrs.size===2){ const [a,b]=[...ptrs.values()]; pinch0=Math.hypot(a.x-b.x,a.y-b.y); zoom0=zoom; } });
+cv.addEventListener('pointermove',e=>{ if(!ptrs.has(e.pointerId)) return; const pr=ptrs.get(e.pointerId), dx=e.clientX-pr.x, dy=e.clientY-pr.y; ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY}); autoT=performance.now();
+  if(ptrs.size===2){ const [a,b]=[...ptrs.values()]; zoom=Math.max(.6,Math.min(2.6,zoom0*Math.hypot(a.x-b.x,a.y-b.y)/pinch0)); if(down) down.moved=99; return; }
+  rotY+=dx*.008; rotX=Math.max(-1.3,Math.min(1.3,rotX+dy*.008)); if(down) down.moved+=Math.abs(dx)+Math.abs(dy); });
+cv.addEventListener('pointerup',e=>{ ptrs.delete(e.pointerId);
+  if (down&&down.moved<8){ const r=cv.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top; let best=null,bd=1e9;
+    for (const n of G.nodes){ if(n.alpha<.5) continue; const d=Math.hypot(n.px-x,n.py-y), lim=Math.max(22,15*n.size*n.pf); if(d<lim&&d<bd){bd=d;best=n;} }
+    if (best) openNode(best.id); }
+  down=null; });
+cv.addEventListener('pointercancel',e=>ptrs.delete(e.pointerId));
+cv.addEventListener('wheel',e=>{ e.preventDefault(); zoom=Math.max(.6,Math.min(2.6,zoom*Math.exp(-e.deltaY*.0012))); },{passive:false});
+
+/* ================= UI ================= */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LV=['Off','Nudge','Wander','Surprise me'];
+let tt; function toast(m){ const el=$('#toast'); el.textContent=m; el.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>el.classList.remove('show'),2600); }
+function go(v){ document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v)); document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id===v)); closeSheet(); if(v==='v-map') requestAnimationFrame(resize); }
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.v)));
+$('#btnImport').addEventListener('click',()=>go('v-imp'));
+$('#backdrop').addEventListener('click',closeSheet);
+function closeSheet(){ sheetNode=null; $('#sheet').classList.remove('open'); $('#backdrop').classList.remove('open'); }
+function tagLinks(c){ return `<div class="tags">${CAT[c].tags.map(t=>`<a class="tag" href="https://www.instagram.com/explore/tags/${encodeURIComponent(t)}/" target="_blank" rel="noopener">#${esc(t)}</a>`).join('')}</div>`; }
+function topAccounts(c,n=6){ return Object.entries(M.acctCats).filter(([u,cs])=>cs&&cs.includes(c)).map(([u])=>[u,accW(S.summary.accounts[u])]).sort((a,b)=>b[1]-a[1]).slice(0,n); }
+function stateInfo(n){
+  if(n.state==='star') return ['NORTH STAR',COL.cyan];
+  if(n.state==='wild'){ const t=curTangent(); return t&&progress(t)>=1?['NOW IN YOUR WORLD',COL.green]:['THIS MONTH’S TANGENT',COL.magenta]; }
+  if(n.state==='reach') return [['','ONE STEP AWAY','TWO STEPS AWAY','FAR JUMP'][n.tier],COL.yellow];
+  return ['YOUR WORLD',COL.green];
+}
+function openNode(id){
+  const n=G.byId.get(id); if(!n) return; sheetNode=id; const [lab,col]=stateInfo(n), c=hex(col); let body='';
+  if (n.state==='core'||n.state==='star'){
+    const share=Math.round(M.score[id]/M.total*1000)/10, accs=topAccounts(id);
+    body+=`<div class="why">${n.state==='star'?'<b>This started as a monthly Tangent and stuck.</b> ':''}About <b>${share}%</b> of your activity lands here.</div>`;
+    if (accs.length) body+=`<div class="sect" style="margin:6px 0 0">Top accounts</div><div>${accs.map(([u,w])=>`<div class="acct"><div class="nm"><a href="https://www.instagram.com/${encodeURIComponent(u)}/" target="_blank" rel="noopener">@${esc(u)}</a></div><div class="meta mono">${Math.round(w)} pts</div></div>`).join('')}</div><div class="note">Wrong? Fix accounts in Sort.</div>`;
+    if (M.monthCat && n.state==='core') body+=`<div class="sect" style="margin:6px 0 0">Go further</div>${tagLinks(id)}`;
+  } else if (n.state==='wild'){
+    const t=curTangent(), p=t?progress(t):0, today=new Date().toISOString().slice(0,10);
+    body+=`<div class="why"><b>Why this:</b> ${esc(tangentWhy(id))}</div>
+      <div><div class="eyebrow">${Math.round(p*4)} of 4 explorations${t&&exportSessions(t)?' (some counted from your Instagram activity)':''}</div><div class="bar"><i style="width:${p*100}%"></i></div></div>
+      <div class="sect" style="margin:6px 0 0">Start exploring</div>${tagLinks(id)}
+      <div class="acts"><button class="btn p" id="shExplore" ${t&&t.sessions.includes(today)?'disabled':''}>I explored it today</button></div>`;
+  } else {
+    const via=[...ADJ[id]].filter(m=>M.coreSet.has(m)).map(m=>CAT[m].label);
+    const why=n.tier===1?`Next to ${listJoin(via.slice(0,3))}, which you already spend time on.`:n.tier===2?'Two steps out from your world. A bigger stretch, still connected.':'A far jump. Nothing like your usual feed, picked to surprise you.';
+    body+=`<div class="why"><b>Why this:</b> ${esc(why)}</div><div class="sect" style="margin:6px 0 0">Try it on Instagram</div>${tagLinks(id)}
+      <div class="acts"><button class="btn" id="shHide">Not for me</button></div>`;
+  }
+  $('#sheet').innerHTML=`<div class="grab"></div><div class="sh-t"><span class="dot" style="background:${col};box-shadow:0 0 12px ${col}"></span>${esc(n.label)}</div>
+    <span class="state" style="background:${rgba(c,.15)};color:${col};border:1px solid ${rgba(c,.4)}">${lab}</span><div class="stack">${body}</div>`;
+  $('#sheet').classList.add('open'); $('#backdrop').classList.add('open');
+  $('#shExplore')?.addEventListener('click',exploreToday);
+  $('#shHide')?.addEventListener('click',()=>{ S.hidden=[...new Set([...(S.hidden||[]),id])]; save(); closeSheet(); toast(`Got it. ${CAT[id].label} won't be suggested.`); recompute(false); });
+}
+function renderWCard(){
+  const el=$('#wcard'), t=curTangent();
+  if (!t){ el.className='card wcard'; el.innerHTML=`<div class="wic">✦</div><div><div class="eyebrow">This month's Tangent</div><div class="t2">Nothing new to suggest</div></div>`; el.onclick=()=>go('v-tan'); return; }
+  const p=progress(t), ask=S.tangents.find(x=>x.status==='ask');
+  el.className='card wcard'+(ask?' star':'');
+  el.innerHTML= ask ? `<div class="wic"><span class="dot dc" style="width:14px;height:14px"></span></div><div style="flex:1;min-width:0"><div class="eyebrow">Last month you explored ${esc(CAT[ask.cat].label)}</div><div class="t2">Still into it?</div><div class="ml">Answer in the Tangent tab</div></div>`
+  : `<div class="wic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF4FD8" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="2.5"/></svg></div>
+     <div style="flex:1;min-width:0"><div class="eyebrow">${monthName(t.month)}'s Tangent</div><div class="t2">${esc(CAT[t.cat].label)}</div><div class="bar"><i style="width:${p*100}%"></i></div><div class="ml" style="margin-top:5px">${p>=1?'Part of your world now. Will it stick?':`${Math.round(p*4)} of 4 explorations`}</div></div>`;
+  el.onclick=()=> ask? go('v-tan') : openNode(t.cat);
+}
+const monthName=ym=>new Date(+ym.slice(0,4),+ym.slice(5)-1,1).toLocaleString(undefined,{month:'long'});
+function updDial(){
+  $('#dial').value=S.dial; $('#dialVal').textContent=LV[S.dial];
+  const n=Object.values(M.tier).filter(t=>t<=S.dial).length;
+  $('#dialCap').textContent=S.dial===0?'Exploration off. Only your world is shown.':S.dial===1?`${n} interests one step from your world`:S.dial===2?`${n} interests up to two steps away`:`${n} interests, including a few far jumps`;
+  [...$('#ticks').children].forEach((s,i)=>s.classList.toggle('on',i===S.dial));
+}
+$('#dial').addEventListener('input',e=>{ S.dial=+e.target.value; save(); updDial(); });
+function renderTangent(){
+  const t=curTangent(), ask=S.tangents.filter(x=>x.status==='ask'); let h='';
+  for (const a of ask) h+=`<div class="card stack" style="border-color:rgba(61,232,255,.45)"><div class="eyebrow">${monthName(a.month)}'s Tangent</div><div class="t2">Are you still into ${esc(CAT[a.cat].label)}?</div><div class="note">If yes, it becomes a North Star on your map.</div><div class="acts"><button class="btn c" data-ans="${a.month}|1">Yes, it stuck</button><button class="btn" data-ans="${a.month}|0">Not really</button></div></div>`;
+  if (t){ const p=progress(t), today=new Date().toISOString().slice(0,10);
+    h+=`<div class="card stack" style="border-color:rgba(255,79,216,.45);background:linear-gradient(160deg,rgba(255,79,216,.12),var(--panel) 60%)">
+      <div><div class="eyebrow">Picked on 1 ${monthName(t.month)}</div><div class="t2" style="font-size:22px">${esc(CAT[t.cat].label)}</div></div>
+      <div class="why"><b>Why this:</b> ${esc(tangentWhy(t.cat))}</div>
+      <div><div class="eyebrow">${Math.round(p*4)} of 4 explorations</div><div class="bar"><i style="width:${p*100}%"></i></div></div>
+      ${tagLinks(t.cat)}
+      <div class="acts"><button class="btn p" id="tanExplore" ${t.sessions.includes(today)?'disabled':''}>${t.sessions.includes(today)?'Counted for today':'I explored it today'}</button></div>
+      <div class="note">Exploring on Instagram also counts: re-import your data later and Tangent will see it.</div></div>`;
+  } else h+=`<div class="card empty">Import your data to get your first Tangent.</div>`;
+  $('#tanBody').innerHTML=h;
+  $('#tanExplore')?.addEventListener('click',exploreToday);
+  $('#tanBody').querySelectorAll('[data-ans]').forEach(b=>b.addEventListener('click',()=>{ const [m,y]=b.dataset.ans.split('|'); answerStuck(m,y==='1'); }));
+  const past=S.tangents.slice().reverse();
+  const lab={active:['Exploring','#FF4FD8'],ask:['Waiting for you','#3DE8FF'],stuck:['North Star','#3DE8FF'],dropped:['Didn’t stick','#646a99'],lapsed:['Skipped','#646a99']};
+  $('#tanHist').innerHTML=past.length?past.map(x=>`<div class="hist"><div><div style="font-weight:600">${esc(CAT[x.cat].label)}</div><div class="ml">${monthName(x.month)} ${x.month.slice(0,4)}</div></div><div style="font-size:12px;font-weight:700;color:${lab[x.status][1]}">${lab[x.status][0]}</div></div>`).join(''):'<div class="empty">Your monthly Tangents will collect here.</div>';
+}
+let sortQ='';
+const catOptions=sel=>`<option value="">Choose an interest…</option><option value="_ignore"${sel==='_ignore'?' selected':''}>Ignore (friends, personal)</option>`+Object.values(CAT).sort((a,b)=>a.label.localeCompare(b.label)).map(c=>`<option value="${c.id}"${sel===c.id?' selected':''}>${esc(c.label)}</option>`).join('');
+function renderSort(){
+  const un=M.unsorted;
+  $('#sortDesc').textContent=`${M.autoN.toLocaleString()} accounts were matched automatically. ${un.length.toLocaleString()} could not be read from the name alone. Sort the ones you engage with most; your map updates as you go.`;
+  const badge=$('#sortBadge'); badge.hidden=!un.length; badge.textContent=un.length>99?'99+':un.length;
+  const q=sortQ.toLowerCase();
+  let list=q? Object.keys(S.summary.accounts).filter(u=>u.toLowerCase().includes(q)).map(u=>[u,accW(S.summary.accounts[u]),S.summary.accounts[u]]).sort((a,b)=>b[1]-a[1]) : un;
+  list=list.slice(0,60);
+  const fmt=a=>[a[0]&&`${a[0]} likes`,a[1]&&`${a[1]} saves`,a[2]&&`${a[2]} comments`,a[3]&&`${a[3]} watched`,a[5]&&'following'].filter(Boolean).join(' · ')||'viewed';
+  $('#sortList').innerHTML=list.length? list.map(([u,w,a])=>{ const cur=S.overrides[u]?.[0]||(M.acctCats[u]||[])[0]||'';
+    return `<div class="acct"><div class="nm"><a href="https://www.instagram.com/${encodeURIComponent(u)}/" target="_blank" rel="noopener">@${esc(u)}</a></div><div class="meta mono">${Math.round(w)} pts</div><div class="meta" style="grid-column:1/-1">${fmt(a)}</div><select aria-label="Interest for @${esc(u)}" data-u="${esc(u)}" id="sel-${hash(u)}">${catOptions(cur)}</select></div>`; }).join('')
+    : `<div class="empty">${q?'No accounts match that search.':'Everything is sorted. Nice.'}</div>`;
+  $('#sortList').querySelectorAll('select').forEach(s=>s.addEventListener('change',()=>{ const u=s.dataset.u; if(s.value) S.overrides[u]=[s.value]; else delete S.overrides[u]; save(); toast(s.value==='_ignore'?`@${u} ignored`:s.value?`@${u} → ${CAT[s.value].label}`:'Cleared'); recompute(false); }));
+  renderAI();
+}
+$('#sortSearch').addEventListener('input',e=>{ sortQ=e.target.value.trim(); renderSort(); });
+function renderAI(){
+  const n=Math.min(150,M.unsorted.length);
+  $('#aiCard').innerHTML=`<div style="font-weight:600">Sort with AI (optional)</div>
+    <div class="note">Sends only the account names (not your activity) to Anthropic's API with your own key, which stays on this phone. Works in the installed app; some in-app browsers block it.</div>
+    <input class="field" id="aiKey" type="password" autocomplete="off" placeholder="Anthropic API key (sk-ant-…)" value="${esc(S.key||'')}" aria-label="Anthropic API key">
+    <div class="acts"><button class="btn c" id="aiRun" ${n?'':'disabled'}>Sort ${n} accounts with AI</button></div><div class="prog" id="aiProg" aria-live="polite" style="min-height:0"></div>`;
+  $('#aiKey').addEventListener('change',e=>{ S.key=e.target.value.trim(); save(); });
+  $('#aiRun').addEventListener('click',runAI);
+}
+async function runAI(){
+  const key=$('#aiKey').value.trim(); S.key=key; save(); const pr=$('#aiProg');
+  if (!key){ pr.textContent='Paste your API key first.'; return; }
+  const names=M.unsorted.slice(0,150).map(x=>x[0]); const ids=Object.keys(CAT);
+  pr.textContent=`Asking about ${names.length} accounts…`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-haiku-5-5',max_tokens:6000,messages:[{role:'user',content:`Classify each Instagram account username by what it most likely posts. Allowed category ids: ${ids.join(', ')}. Use "none" for personal accounts or when you cannot tell. Reply with only a JSON object mapping each username to an array of at most 2 ids.\n\nUsernames:\n${names.join('\n')}`}]})});
+    if (!res.ok){ const t=await res.text(); throw new Error(res.status===401?'That API key was rejected.':`The API returned an error (${res.status}). ${t.slice(0,120)}`); }
+    const data=await res.json(), text=(data.content||[]).map(c=>c.text||'').join(''), js=JSON.parse(text.slice(text.indexOf('{'),text.lastIndexOf('}')+1));
+    let n=0; for (const [u,cs] of Object.entries(js)){ if(!S.summary.accounts[u]||S.overrides[u]) continue; const ok=(cs||[]).filter(c=>CAT[c]); if(ok.length){ S.overrides[u]=ok.slice(0,2); n++; } }
+    save(); pr.textContent=`Sorted ${n} accounts. The rest looked personal or unclear.`; recompute(false);
+  }catch(e){ pr.textContent=(e instanceof TypeError)?'The request was blocked. This works in the installed app with an internet connection.':(e.message||'Something went wrong.'); }
+}
+function renderInsights(){
+  const sm=S.summary, b=M.breadth, first=b.length?b[0][1]:0, last=b.length?b[b.length-1][1]:0;
+  const peak=b.reduce((m,x)=>Math.max(m,x[1]),0), lock=Math.round(M.lock*100);
+  $('#insMetrics').innerHTML=`
+    <div class="card wide" style="border-color:rgba(61,232,255,.45);background:linear-gradient(160deg,rgba(61,232,255,.1),var(--panel) 60%)"><div class="ml" style="margin:0 0 4px">Lock-in score, last 3 months</div><div class="mv" style="color:${lock>=70?'var(--danger)':lock>=50?'var(--yellow)':'var(--green)'}">${lock}%</div><div class="ml">of your attention went to just your top 3 interests. ${lock>=70?'Your world is narrow right now.':lock>=50?'Some narrowing.':'Healthy spread.'}</div></div>
+    <div class="card"><div class="mv" style="color:var(--green)">${M.core.length}</div><div class="ml">interests in your world</div></div>
+    <div class="card"><div class="mv" style="color:${last<peak?'var(--yellow)':'var(--green)'}">${last}<span style="font-size:15px;color:var(--muted)"> / ${peak}</span></div><div class="ml">interests this month vs your peak</div></div>
+    <div class="card wide"><div class="mv" style="color:var(--cyan)">${S.tangents.filter(t=>t.status==='stuck').length}</div><div class="ml">North Stars: new interests that stuck</div></div>`;
+  // chart
+  const svg=$('#chart'); if (b.length<2){ svg.innerHTML=`<text x="170" y="90" text-anchor="middle" fill="#9097c4" font-size="12">Not enough dated activity yet</text>`; }
+  else { const mx=Math.max(4,...b.map(x=>x[1])), X=i=>34+i*(296/(b.length-1)), Y=v=>140-v/mx*118; let s='';
+    const step=mx<=6?1:mx<=12?2:5; for(let v=0;v<=mx;v+=step) s+=`<line x1="30" x2="334" y1="${Y(v)}" y2="${Y(v)}" stroke="#1f2350"/><text x="22" y="${Y(v)+3}" fill="#646a99" font-size="9" text-anchor="end">${v}</text>`;
+    s+=`<polygon points="${X(0)},140 ${b.map((x,i)=>`${X(i)},${Y(x[1])}`).join(' ')} ${X(b.length-1)},140" fill="rgba(61,255,138,.12)"/>`;
+    s+=`<polyline points="${b.map((x,i)=>`${X(i)},${Y(x[1])}`).join(' ')}" fill="none" stroke="#3DFF8A" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+    b.forEach((x,i)=>{ const lastP=i===b.length-1; s+=`<circle cx="${X(i)}" cy="${Y(x[1])}" r="${lastP?4.5:2.8}" fill="${lastP?'#3DE8FF':'#3DFF8A'}"/>`;
+      if (b.length<=7||i%2===(b.length-1)%2) s+=`<text x="${X(i)}" y="160" fill="#9097c4" font-size="9.5" text-anchor="middle">${new Date(+x[0].slice(0,4),+x[0].slice(5)-1,1).toLocaleString(undefined,{month:'short'})}</text>`; });
+    s+=`<text x="${X(b.length-1)}" y="${Y(last)-9}" fill="#3DE8FF" font-size="10" font-weight="700" text-anchor="end">${last}</text>`;
+    svg.innerHTML=s; }
+  const mx=Math.max(1,...M.core.map(c=>M.score[c]));
+  $('#insTop').innerHTML=M.ranked.slice(0,10).map(c=>`<div class="lab"><span class="dot ${M.core.includes(c)?'dg':'dy'}"></span><span>${esc(CAT[c].label)}</span></div><div class="num">${Math.round(M.score[c]/M.total*100)}%</div><div class="trk"><i style="width:${Math.min(100,M.score[c]/mx*100)}%"></i></div>`).join('')||'<div class="empty">No interests found yet.</div>';
+  $('#insTopics').innerHTML=sm.topics.length?`<div class="tags">${sm.topics.slice(0,40).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div><div class="note" style="margin-top:8px">These are the topics Instagram itself has assigned to you.</div>`:'<div class="empty">Your export had no topics file. Include "Preferences" or "Ads information" next time.</div>';
+  const c=sm.counts, d=t=>t?new Date(t*1000).toLocaleDateString(undefined,{month:'short',year:'numeric'}):'';
+  $('#insSrc').innerHTML=`<div class="hbar" style="grid-template-columns:minmax(0,1fr) auto">${[['Liked posts',c.like],['Saved posts',c.save],['Comments',c.comment],['Videos watched',c.watch],['Posts viewed',c.view],['Accounts followed',c.follow],['Instagram topics',c.topic],['Hashtags',c.hashtag]].map(([k,v])=>`<div>${k}</div><div class="num">${(v||0).toLocaleString()}</div>`).join('')}</div><div class="note" style="margin-top:8px">${sm.range[0]?`Activity from ${d(sm.range[0])} to ${d(sm.range[1])}. `:''}Messages are never read.</div>`;
+}
+function renderSrc(){
+  const sm=S.summary, el=$('#srcLine');
+  el.className='src'+(sm.source==='sample'?' sample':'');
+  el.textContent=sm.source==='sample'?'Sample data · tap ↑ to import yours':`Your Instagram · imported ${new Date(sm.importedAt).toLocaleDateString(undefined,{day:'numeric',month:'short'})}`;
+  $('#dataNote').textContent=sm.source==='sample'?'You are looking at sample data. Import your export to replace it.':`Imported ${new Date(sm.importedAt).toLocaleString()}. ${Object.keys(sm.accounts).length.toLocaleString()} accounts. Stored only in this app on this phone.`;
+}
+function renderAll(){ renderSrc(); renderWCard(); updDial(); renderTangent(); renderSort(); renderInsights(); }
+
+// import UI
+$('#file').addEventListener('change',e=>{ if(e.target.files.length) importFiles([...e.target.files]); e.target.value=''; });
+const drop=$('#drop');
+['dragenter','dragover'].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.add('over');}));
+['dragleave','drop'].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.remove('over');}));
+drop.addEventListener('drop',e=>{ if(e.dataTransfer.files.length) importFiles([...e.dataTransfer.files]); });
+$('#btnSample').addEventListener('click',()=>{ S={overrides:{},tangents:[],hidden:[],dial:1,key:S?.key||'',summary:sampleSummary()}; save(); recompute(true); toast('Sample data loaded.'); go('v-map'); });
+let clearArm=0;
+$('#btnClear').addEventListener('click',e=>{ const b=e.currentTarget;
+  if (Date.now()-clearArm>4000){ clearArm=Date.now(); b.textContent='Tap again to delete'; setTimeout(()=>b.textContent='Delete my data',4000); return; }
+  try{ localStorage.removeItem(KEY); }catch(x){} S={overrides:{},tangents:[],hidden:[],dial:1,key:'',summary:sampleSummary()}; recompute(true); b.textContent='Delete my data'; toast('Your data was deleted. Showing sample data.'); });
+
+// boot
+if (!S||!S.summary){ S={overrides:{},tangents:[],hidden:[],dial:1,key:'',summary:sampleSummary()}; }
+S.overrides=S.overrides||{}; S.tangents=S.tangents||[]; S.hidden=S.hidden||[]; if(S.dial==null) S.dial=1;
+recompute(true); resize();
+if ('serviceWorker' in navigator && window.TANGENT_STANDALONE){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+</script>
+
+</body></html>
