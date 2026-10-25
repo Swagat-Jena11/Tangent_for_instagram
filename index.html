@@ -34,6 +34,50 @@ button,select,input{font-family:inherit;color:inherit}
 button{cursor:pointer;border:none;background:none}
 a{color:var(--cyan)}
 :focus-visible{outline:2px solid var(--cyan);outline-offset:2px;border-radius:6px}
+.shell{height:100%;display:flex}
+.shell>.app{flex:1;min-width:0}
+.logdock{display:none}
+@media (min-width:1000px){.shell{justify-content:center;background:#03040b}.shell>.app{flex:0 0 480px;border-left:1px solid var(--line);border-right:1px solid var(--line)}}
+.logbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding-block:12px 10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));border-bottom:1px solid var(--line)}
+.logbar h2{font-family:var(--f-display);font-size:16px;margin:0 auto 0 0}
+.logbar .btn{padding:8px 11px;font-size:12.5px}
+.logbar label{font-size:12px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.loglist{flex:1;overflow:auto;padding:10px 16px 20px;font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#cfd3f5}
+.ll{padding:3px 0;border-bottom:1px solid #141836;white-space:pre-wrap;word-break:break-word}
+.ll .ts{color:#5c6292}.ll.warn .lv{color:var(--yellow)}.ll.error .lv{color:var(--danger)}.ll.ok .lv{color:var(--green)}.ll .lv{color:var(--cyan);font-weight:700}
+.ll pre{margin:3px 0 2px 14px;color:#9aa0cc;white-space:pre-wrap;word-break:break-word;font:inherit;font-size:11.5px}
+#v-log{padding:0;display:none;flex-direction:column}
+#v-log.on{display:flex}
+#v-log .loglist{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 16px)}
+.thread{display:flex;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line);width:100%;text-align:left}
+.thread:last-child{border-bottom:none}
+.av{width:40px;height:40px;border-radius:50%;flex:none;display:grid;place-items:center;font-family:var(--f-display);font-weight:600;font-size:15px;color:#0b0d20}
+.thread .tx{flex:1;min-width:0}.thread .tn{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.thread .tm{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.thread .tc{font-size:11.5px;color:var(--dim);text-align:right;flex:none;font-variant-numeric:tabular-nums}
+#v-chat{padding:0;display:none;flex-direction:column}
+#v-chat.on{display:flex}
+.chathead{display:flex;align-items:center;gap:10px;padding-block:6px 8px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));border-bottom:1px solid var(--line)}
+.chathead .tn{font-family:var(--f-display);font-weight:600;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:4px;padding-block:10px calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 16px);padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px))}
+.day{align-self:center;font-size:11px;color:var(--dim);margin:10px 0 4px;background:var(--panel2);padding:3px 10px;border-radius:10px}
+.msg{max-width:80%;padding:8px 11px;border-radius:16px;background:var(--panel2);border:1px solid var(--line);font-size:14px;line-height:1.4;white-space:pre-wrap;word-break:break-word;align-self:flex-start}
+.msg.me{align-self:flex-end;background:rgba(61,232,255,.14);border-color:rgba(61,232,255,.35)}
+.msg .who{font-size:11px;color:var(--yellow);font-weight:600;margin-bottom:2px}
+.msg .meta{font-size:10.5px;color:var(--dim);margin-top:3px;text-align:right}
+.msg .sh{display:block;margin-top:4px;font-size:12.5px}
+.msg img,.msg video{display:block;max-width:100%;border-radius:10px;margin-top:6px}
+.msg.hit{outline:2px solid var(--yellow)}
+.mini{padding:6px 10px;font-size:12px;border-radius:10px}
+.seg2{display:flex;gap:4px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:10px}
+.seg2 button{flex:1;padding:9px;border-radius:9px;font-size:13px;font-weight:600;color:var(--muted)}
+.seg2 button.on{background:var(--text);color:#080a18}
+.filters{display:flex;gap:8px;flex-wrap:wrap}.filters .search{flex:1 1 180px}.filters select{flex:1 1 160px;margin-bottom:10px;width:auto}
+.rank{font-size:11px;color:var(--dim);font-variant-numeric:tabular-nums;margin-right:6px}
+.cats{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.pill2{font-size:11.5px;padding:3px 9px;border-radius:20px;background:rgba(61,255,138,.12);border:1px solid rgba(61,255,138,.4);color:var(--green)}
+.pill2.none{background:var(--panel2);border-color:var(--line);color:var(--dim)}
+.srcl{font-size:10.5px;color:var(--dim);letter-spacing:.3px;text-transform:uppercase}
 .app{position:relative;height:100%;display:flex;flex-direction:column;background:radial-gradient(ellipse at 30% 0%,#161b45 0%,var(--bg) 60%)}
 .top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-block:10px 6px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .brand{display:flex;align-items:center;gap:9px;font-family:var(--f-display);font-weight:700;font-size:19px;letter-spacing:-.3px}
@@ -143,7 +187,7 @@ ol.steps b{color:var(--text)}
 @media (min-width:720px){.view{padding-left:max(24px,calc(50% - 300px));padding-right:max(24px,calc(50% - 300px))}.mapfoot{padding-left:max(24px,calc(50% - 300px));padding-right:max(24px,calc(50% - 300px))}}
 </style>
 
-<div class="app" id="app">
+<div class="shell"><div class="app" id="app">
   <header class="top">
     <div>
       <div class="brand"><svg width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><circle cx="20" cy="26" r="13" fill="none" stroke="#3DFF8A" stroke-width="3.4"/><line x1="4" y1="11" x2="46" y2="11" stroke="#FFD93D" stroke-width="3.4" stroke-linecap="round" transform="rotate(-14 24 13)"/><circle cx="21" cy="13.2" r="4" fill="#FF4FD8"/></svg>Tangent</div>
@@ -187,7 +231,8 @@ ol.steps b{color:var(--text)}
       <h1 class="pt">Sort accounts</h1>
       <p class="pd" id="sortDesc"></p>
       <div class="card stack" id="aiCard" style="margin-bottom:12px"></div>
-      <input class="search" id="sortSearch" type="search" placeholder="Search accounts" aria-label="Search accounts">
+      <div class="seg2" role="tablist"><button id="tabNeed" class="on" role="tab">Needs sorting</button><button id="tabAll" role="tab">All accounts</button></div>
+      <div class="filters"><input class="search" id="sortSearch" type="search" placeholder="Search accounts" aria-label="Search accounts"><select class="field" id="sortCat" aria-label="Filter by interest" hidden></select></div>
       <div class="card" id="sortList"></div>
     </section>
 
@@ -206,6 +251,20 @@ ol.steps b{color:var(--text)}
       <div class="card" id="insSrc"></div>
     </section>
 
+    <!-- CHATS -->
+    <section class="view" id="v-chats" aria-label="Chats">
+      <h1 class="pt">Your chats</h1>
+      <p class="pd" id="chatsDesc">Import an export that includes <b>Messages</b> to read your chat history here.</p>
+      <input class="search" id="chatSearch" type="search" placeholder="Search names and messages" aria-label="Search chats">
+      <div class="card" id="chatList"><div class="empty">No chats loaded yet.</div></div>
+      <p class="note" style="margin-top:10px">Chats stay in this app's memory only. They are never saved, uploaded or sent to AI, and they clear when you close the app. Instagram leaves end-to-end encrypted chats out of exports.</p>
+    </section>
+    <section class="view" id="v-chat" aria-label="Conversation">
+      <div class="chathead"><button class="iconbtn" id="chatBack" aria-label="Back to chats"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button><div style="flex:1;min-width:0"><div class="tn" id="chatTitle"></div><div class="ml" id="chatSub"></div></div><button class="btn mini" id="chatCopy">Copy</button><button class="btn mini" id="chatSave">Save</button></div>
+      <div class="msgs" id="msgs"></div>
+    </section>
+
+
     <!-- IMPORT -->
     <section class="view" id="v-imp" aria-label="Import data">
       <h1 class="pt">Bring in your Instagram</h1>
@@ -215,7 +274,7 @@ ol.steps b{color:var(--text)}
         <ol class="steps">
           <li>In Instagram, open <b>Settings → Accounts Center → Your information and permissions → Export your information</b>.</li>
           <li>Tap <b>Create export</b>, pick your profile, then <b>Export to device</b>.</li>
-          <li>Under <b>Customize information</b>, keep <b>Your Instagram activity</b>, <b>Connections</b>, <b>Preferences</b> and <b>Ads information</b>. Untick <b>Messages</b> and media to keep the file small.</li>
+          <li>Under <b>Customize information</b>, keep <b>Your Instagram activity</b>, <b>Connections</b>, <b>Preferences</b> and <b>Ads information</b>. Tick <b>Messages</b> if you want your chats. Untick media to keep the file small.</li>
           <li>Set <b>Format: JSON</b> and <b>Date range: All time</b>, then start the export.</li>
           <li>When Instagram notifies you, download the ZIP to this phone.</li>
         </ol>
@@ -243,11 +302,13 @@ ol.steps b{color:var(--text)}
     <button data-v="v-tan"><svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="2.5"/></svg>Tangent</button>
     <button data-v="v-sort"><svg viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Sort<span class="badge" id="sortBadge" hidden></span></button>
     <button data-v="v-ins"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M6 15l4-5 3 3 5-7"/></svg>Insights</button>
+    <button data-v="v-chats"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z"/></svg>Chats</button>
   </nav>
 
   <div class="backdrop" id="backdrop"></div>
   <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
   <div class="toast" id="toast" role="status"></div>
+</div>
 </div>
 
 <script>
@@ -321,6 +382,14 @@ const LONG_KW=[], SHORT_KW={};
 for (const c of Object.values(CAT)) for (const k of c.kw) { if (k.length>=4) LONG_KW.push([k,c.id]); else (SHORT_KW[k]=SHORT_KW[k]||[]).push(c.id); }
 LONG_KW.sort((a,b)=>b[0].length-a[0].length);
 
+const KW_EXACT=new Map(); for (const c of Object.values(CAT)) for (const k of c.kw){ const a=KW_EXACT.get(k)||[]; a.push(c.id); KW_EXACT.set(k,a); }
+const LONG5=LONG_KW.filter(x=>x[0].length>=5);
+function contentCats(tags,caption,out){ // hashtags: exact or compound match; caption: exact words only (weaker)
+  for (let t of tags){ t=String(t).toLowerCase().replace(/^#/,''); if(!t) continue; const ex=KW_EXACT.get(t); if(ex){ for(const id of ex) out[id]=(out[id]||0)+1; continue; }
+    for (const [k,id] of LONG5) if (t.includes(k)){ out[id]=(out[id]||0)+1; break; } }
+  if (caption){ const seen=new Set(); for (const w of String(caption).toLowerCase().split(/[^a-z0-9]+/)){ if(w.length<3||seen.has(w)) continue; seen.add(w); const ex=KW_EXACT.get(w); if(ex) for(const id of ex) out[id]=(out[id]||0)+0.5; }
+    for (const h of String(caption).match(/#[\p{L}\p{N}_]+/gu)||[]) contentCats([h],'',out); }
+  return out; }
 function matchName(name){
   const n=name.toLowerCase(), out=new Set(); let rest=n;
   for (const [k,id] of LONG_KW) if (rest.includes(k)) { out.add(id); rest=rest.split(k).join(' '); }
@@ -343,12 +412,15 @@ function load(){ try{ const s=localStorage.getItem(KEY); return s?JSON.parse(s):
 function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); return true; }catch(e){ return false; } }
 let S = load();
 
+/* ================= (no logging in the user version) ================= */
+const LOG_REAL=false; function dlog(){} function renderLog(){} function logText(){ return ''; }
+function maskStr(s){ return ''; } function shape(){ return null; } const maskName=u=>u; const P=p=>p;
 /* ================= ZIP reader (lazy, on-device) ================= */
 async function zipEntries(file){
   const tl=Math.min(file.size,65557), base=file.size-tl;
   const tail=new DataView(await file.slice(base).arrayBuffer());
   let e=-1; for (let i=tl-22;i>=0;i--) if (tail.getUint32(i,true)===0x06054b50){e=i;break;}
-  if (e<0) throw new Error('This does not look like a ZIP file.');
+  if (e<0){ dlog('error','No ZIP end-of-central-directory record in the last 64 KB',{size:file.size,firstBytes:[...new Uint8Array(await file.slice(0,4).arrayBuffer())].map(b=>b.toString(16).padStart(2,'0')).join(' ')}); throw new Error('This does not look like a ZIP file.'); }
   let count=tail.getUint16(e+10,true), cdSize=tail.getUint32(e+12,true), cdOff=tail.getUint32(e+16,true);
   if (cdOff===0xffffffff||count===0xffff||cdSize===0xffffffff){
     const L=e-20; if (L>=0 && tail.getUint32(L,true)===0x07064b50){
@@ -357,10 +429,11 @@ async function zipEntries(file){
       count=Number(z.getBigUint64(32,true)); cdSize=Number(z.getBigUint64(40,true)); cdOff=Number(z.getBigUint64(48,true));
     }
   }
+  dlog('info','ZIP directory found',{entries:count,directoryOffset:cdOff,directorySize:cdSize,zip64:tail.getUint32(e+16,true)===0xffffffff||tail.getUint16(e+10,true)===0xffff});
   const cd=new DataView(await file.slice(cdOff,cdOff+cdSize).arrayBuffer()), dec=new TextDecoder();
   const out=[]; let p=0;
   for (let k=0;k<count && p+46<=cd.byteLength;k++){
-    if (cd.getUint32(p,true)!==0x02014b50) break;
+    if (cd.getUint32(p,true)!==0x02014b50){ dlog('warn',`Directory entry ${k} has a bad signature; stopped reading the directory`,{read:out.length,expected:count}); break; }
     const method=cd.getUint16(p+10,true); let comp=cd.getUint32(p+20,true), unc=cd.getUint32(p+24,true);
     const nl=cd.getUint16(p+28,true), xl=cd.getUint16(p+30,true), cl=cd.getUint16(p+32,true); let lo=cd.getUint32(p+42,true);
     const name=dec.decode(new Uint8Array(cd.buffer,cd.byteOffset+p+46,nl));
@@ -379,82 +452,206 @@ async function zipText(file,en){
   const start=en.lo+30+h.getUint16(26,true)+h.getUint16(28,true);
   const blob=file.slice(start,start+en.comp);
   if (en.method===0) return await blob.text();
-  if (en.method!==8) throw new Error('Unsupported compression');
+  if (en.method!==8) throw new Error(`Unsupported compression method ${en.method} in ${en.name}`);
   if (typeof DecompressionStream==='undefined') throw new Error('This browser cannot unzip files. Update it, or pick the JSON files instead of the ZIP.');
   return await new Response(blob.stream().pipeThrough(new DecompressionStream('deflate-raw'))).text();
 }
 
 /* ================= Export parsing ================= */
 const fixText=s=>{ if(typeof s!=='string'||!/[\u0080-ÿ]/.test(s)) return s; try{ return decodeURIComponent(escape(s)); }catch(e){ return s; } };
-const WANT=[ // [pattern on path, kind]
+const WANT=[ // [pattern on path, kind]; first match wins; null = skip on purpose
+ [/see_less|not_interested|ads_viewed|other_categories|advertisers_using|ad_preferences/, null], // ads and "show me less" are not interests
+ [/(^|\/)threads\//, null],              // Threads app, not Instagram
+ [/liked_comments/, null],               // likes on other people's comments: says little about you
  [/liked_posts|liked_media|likes_media/, 'like'],
- [/story_likes/, 'like'],
+ [/story_likes|emoji_story_reactions|note_and_repost_interactions/, 'like'],
  [/saved_posts|saved_media|saved_collections/, 'save'],
- [/(post|reels?)_comments/, 'comment'],
+ [/(post|reels?)_comments|comments\/hype|story_interactions\/questions/, 'comment'],
+ [/media\/reposts/, 'share'],
  [/followers_and_following\/following\.json|\/following\.json$|^following\.json$/, 'follow'],
  [/following_hashtags/, 'hashtag'],
  [/videos_watched|reels_watched/, 'watch'],
- [/posts_viewed|posts_seen/, 'view'],
- [/your_topics|recommended_topics/, 'topic'],
- [/content\/(posts_\d+|reels|stories)\.json|\/posts_\d+\.json$/, 'own'],
+ [/posts_viewed|posts_seen|stories_viewed/, 'view'],
+ [/profile_searches/, 'search'],
+ [/word_or_phrase_searches|recent_searches\.json/, 'query'],
+ [/your_topics|recommended_topics|see_more_topics/, 'topic'],
+ [/content\/(posts_\d+|reels|stories)\.json|media\/(posts(_\d+)?|stories|reels)\.json$/, 'own'],
 ];
-function kindFor(path){ const p=path.toLowerCase(); if(/(^|\/)messages\//.test(p)||/followers_\d|\/followers\.json/.test(p)) return null; for(const [re,k] of WANT) if(re.test(p)) return k; return null; }
+function kindFor(path){ const p=path.toLowerCase(); if(/(^|\/)messages\//.test(p)||/followers_\d|\/followers\.json/.test(p)) return null; for(const [re,k] of WANT) if(re.test(p)) return k||null; return null; }
 function firstTs(o){ if(!o||typeof o!=='object') return 0;
   if (typeof o.timestamp==='number') return o.timestamp; if (typeof o.creation_timestamp==='number') return o.creation_timestamp;
   for (const v of Object.values(o)) if (v&&typeof v==='object'){ const t=firstTs(v); if(t) return t; } return 0; }
 function itemsOf(json){ if(Array.isArray(json)) return json; if(json&&typeof json==='object'){ for(const v of Object.values(json)) if(Array.isArray(v)) return v; } return []; }
 function userFromHref(h){ const m=/instagram\.com\/(?:_u\/)?([A-Za-z0-9._]+)\/?$/.exec(h||''); return m?m[1]:''; }
+/* Newer exports: {timestamp, media, label_values:[{label,value,href}|{title,dict:[{dict:[...]}]}], fbid} */
+function lvFlatten(arr,ctx,out){ if(!Array.isArray(arr)) return out;
+  for (const e of arr){ if(!e||typeof e!=='object') continue;
+    const name=e.label??e.title??''; const path=ctx&&name?ctx+' > '+name:(name||ctx);
+    if (e.value!==undefined||e.href!==undefined||e.timestamp_value!==undefined) out.push({label:path,value:e.value,href:e.href,ts:e.timestamp_value});
+    if (Array.isArray(e.dict)) lvFlatten(e.dict,path,out);
+    if (Array.isArray(e.vec)) lvFlatten(e.vec,path,out);
+    if (Array.isArray(e.label_values)) lvFlatten(e.label_values,path,out); }
+  return out; }
+function lvGroups(lv){ // a node titled "Media" with a list of {dict:[…]} children holds several posts
+  for (const e of lv||[]){ if (e&&Array.isArray(e.dict)&&/^media$/i.test(e.title||e.label||'')&&e.dict.some(c=>c&&Array.isArray(c.dict))){
+      const rest=(lv||[]).filter(x=>x!==e); return e.dict.filter(c=>c&&Array.isArray(c.dict)).map(c=>lvFlatten(c.dict,'Media',lvFlatten(rest,'',[]))); } }
+  return [lvFlatten(lv,'',[])]; }
+const IG_NOT_USER=/^(p|reel|reels|tv|explore|stories|accounts|direct|_u|s|tags|locations|about|legal)$/i;
+function userFromUrl(h){ const m=/instagram\.com\/(?:_u\/)?(?:stories\/)?([A-Za-z0-9._]{2,30})(?:\/|$|\?)/.exec(h||''); return m&&!IG_NOT_USER.test(m[1])?m[1]:''; }
+function lvUser(f){
+  const by=re=>f.find(x=>re.test(x.label)&&typeof x.value==='string'&&x.value.trim());
+  let hit=by(/user ?name|handle/i)||by(/(^|> )(owner|author|account|creator|media owner|profile)$/i);
+  if (hit) return hit.value.trim().replace(/^@/,'');
+  for (const x of f){ const u=userFromUrl(x.href)||userFromUrl(typeof x.value==='string'?x.value:''); if(u) return u; }
+  return '';
+}
 function parseFile(path,kind,json,acc){
   const items=itemsOf(json);
   for (const it of items){
     if (!it||typeof it!=='object') continue;
+    if (Array.isArray(it.label_values)){ acc.lvLabels=acc.lvLabels||{};
+      for (const f of lvGroups(it.label_values)){
+        for (const x of f) acc.lvLabels[x.label]=(acc.lvLabels[x.label]||0)+1;
+        const ts=it.timestamp||f.find(x=>x.ts)?.ts||0, str=x=>typeof x.value==='string'&&x.value.trim();
+        const tags=f.filter(x=>/hashtag/i.test(x.label)&&str(x)).map(x=>fixText(x.value));
+        const cap=f.find(x=>/(^|> )(caption|title|text)$/i.test(x.label)&&str(x)); const capT=cap?fixText(cap.value):'';
+        if (kind==='topic'){ const n=f.find(x=>/name|topic/i.test(x.label)&&str(x))?.value; if(n) acc.topics.push(fixText(n)); continue; }
+        if (kind==='query'){ const q=f.find(x=>/search|query/i.test(x.label)&&str(x))?.value; if(q) acc.tags.push(fixText(q)); continue; }
+        if (kind==='own'){ if(tags.length||capT){ contentCats(tags,capT,acc.self||(acc.self={})); acc.ccPosts=(acc.ccPosts||0)+1; } continue; }
+        if (kind==='hashtag') continue;
+        const u=fixText(lvUser(f));
+        if (!u||u.length>40){ acc.lvMiss=(acc.lvMiss||0)+1; continue; }
+        acc.events.push([kind,u,ts]);
+        if (tags.length||capT){ const cc=acc.cc||(acc.cc={}); contentCats(tags,capT,cc[u]||(cc[u]={})); acc.ccPosts=(acc.ccPosts||0)+1; }
+      }
+      continue; }
     const sld=Array.isArray(it.string_list_data)?it.string_list_data[0]:null, smd=it.string_map_data||{};
     const ts=firstTs(it)||0;
     if (kind==='topic'){ const n=smd.Name?.value||it.title||sld?.value; if(n) acc.topics.push(fixText(n)); continue; }
+    if (kind==='query'){ const q=smd.Search?.value||it.title||sld?.value; if(q) acc.tags.push(fixText(q)); continue; }
     if (kind==='hashtag'){ const n=it.title||sld?.value||userFromHref(sld?.href); if(n) acc.tags.push(fixText(n)); continue; }
     if (kind==='own'){ const caps=[]; (it.media||[]).forEach(m=>m.title&&caps.push(m.title)); if(it.title) caps.push(it.title);
-      for(const c of caps){ const h=fixText(c).match(/#[\p{L}\p{N}_]+/gu); if(h) acc.tags.push(...h.map(x=>x.slice(1))); } continue; }
+      if (it.uri&&it.title) caps.push(it.title);
+      for(const c of caps){ const t=fixText(c); contentCats([],t,acc.self||(acc.self={})); acc.ccPosts=(acc.ccPosts||0)+1; } continue; }
     let u='';
     if (kind==='follow') u=(it.title&&it.title.trim())||sld?.value||userFromHref(sld?.href);
     else if (kind==='watch'||kind==='view') u=smd.Author?.value||it.title||'';
     else if (kind==='comment') u=smd['Media Owner']?.value||it.title||'';
+    else if (kind==='search') u=it.title||sld?.value||userFromUrl(sld?.href)||'';
     else u=it.title||sld?.value||smd.Author?.value||'';
     u=fixText(String(u||'')).trim().replace(/^@/,'');
     if (!u||u.length>40) continue;
     acc.events.push([kind,u,ts]);
   }
 }
-const KI={like:0,save:1,comment:2,watch:3,view:4,follow:5};
-const KW=[2,3,3,1,0.5,1];
+const KI={like:0,save:1,comment:2,watch:3,view:4,follow:5,share:6,search:7};
+const KW=[2,3,3,1,0.5,1,2,2];
 function aggregate(acc,source){
-  const accounts={}, months={}; let min=Infinity,max=0; const counts={like:0,save:0,comment:0,watch:0,view:0,follow:0,topic:acc.topics.length,hashtag:acc.tags.length};
+  const accounts={}, months={}; let min=Infinity,max=0; const counts={like:0,save:0,comment:0,watch:0,view:0,follow:0,share:0,search:0,topic:acc.topics.length,hashtag:acc.tags.length};
   for (const [k,u,ts] of acc.events){
-    const a=accounts[u]||(accounts[u]=[0,0,0,0,0,0]); a[KI[k]]++; counts[k]++;
+    const a=accounts[u]||(accounts[u]=[0,0,0,0,0,0,0,0]); a[KI[k]]++; counts[k]++;
     if (ts && k!=='follow'){ const d=new Date(ts*1000), ym=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
       const m=months[ym]||(months[ym]={}); m[u]=(m[u]||0)+KW[KI[k]]; if(ts<min)min=ts; if(ts>max)max=ts; }
   }
   const keys=Object.keys(months).sort(); for (const k of keys.slice(0,-18)) delete months[k];
-  return {accounts,months,topics:[...new Set(acc.topics)],tags:[...new Set(acc.tags.map(t=>t.toLowerCase()))],counts,range:[isFinite(min)?min:0,max],source,importedAt:Date.now()};
+  const cc={}; for (const [u,o] of Object.entries(acc.cc||{})){ const top=Object.entries(o).filter(x=>x[1]>=1).sort((a,b)=>b[1]-a[1]).slice(0,3); if(top.length) cc[u]=Object.fromEntries(top.map(([k,v])=>[k,Math.round(v*2)/2])); }
+  const self={}; for (const [k,v] of Object.entries(acc.self||{})) if(v>=1) self[k]=Math.round(v*2)/2;
+  return {self,cc,accounts,months,topics:[...new Set(acc.topics)],tags:[...new Set(acc.tags.map(t=>t.toLowerCase()))],counts,range:[isFinite(min)?min:0,max],source,importedAt:Date.now()};
 }
+/* ================= Chats ================= */
+let CHATS={threads:[],me:'',src:null,byName:null};
+const isChatPath=p=>/(^|\/)message_\d+\.json$/i.test(p);
+function isChatJson(j){ return j&&typeof j==='object'&&Array.isArray(j.participants)&&Array.isArray(j.messages); }
+function addChat(path,j,acc,store){
+  const key=(j.thread_path||path.replace(/\/message_\d+\.json$/i,'')).replace(/^.*messages\//i,'');
+  let t=store.get(key);
+  if (!t){ t={id:key,title:fixText(j.title||''),people:j.participants.map(x=>fixText(x.name||'')).filter(Boolean),msgs:[]}; store.set(key,t); }
+  let shares=0, media=0;
+  for (const m of j.messages){
+    const o={s:fixText(m.sender_name||''),t:m.timestamp_ms||0,c:m.content!=null?fixText(String(m.content)):''};
+    if (m.share){ o.sh={link:m.share.link||'',text:fixText(m.share.share_text||''),owner:m.share.original_content_owner||''}; if(o.sh.owner){ const ow=String(o.sh.owner).replace(/^@/,''); acc.events.push(['share',ow,Math.floor(o.t/1000)]); shares++; if(o.sh.text){ const cc=acc.cc||(acc.cc={}); contentCats([],o.sh.text,cc[ow]||(cc[ow]={})); } } }
+    const md=[...(m.photos||[]).map(x=>['photo',x.uri]),...(m.videos||[]).map(x=>['video',x.uri]),...(m.audio_files||[]).map(x=>['audio',x.uri]),...(m.gifs||[]).map(x=>['gif',x.uri])].filter(x=>x[1]);
+    if (md.length){ o.md=md; media+=md.length; }
+    if (m.reactions&&m.reactions.length) o.r=m.reactions.map(x=>fixText(x.reaction||'')).join('');
+    if (m.call_duration!=null) o.call=m.call_duration;
+    if (m.is_unsent) o.unsent=true;
+    t.msgs.push(o);
+  }
+  return {messages:j.messages.length,shares,media};
+}
+function finishChats(store,file,all){
+  const threads=[...store.values()].map(t=>{ t.msgs.sort((a,b)=>a.t-b.t); t.last=t.msgs.length?t.msgs[t.msgs.length-1].t:0; return t; }).sort((a,b)=>b.last-a.last);
+  const cnt={}; for (const t of threads) for (const p of new Set(t.people)) cnt[p]=(cnt[p]||0)+1;
+  const me=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0]?.[0]||'';
+  for (const t of threads){ const others=t.people.filter(p=>p!==me); t.name=t.title&&t.title!==me?t.title:(others.join(', ')||me||'Chat'); }
+  const byName=new Map(); if (all) for (const e of all) byName.set(e.name,e);
+  CHATS={threads,me,src:file||null,byName};
+}
+
 async function importFiles(files){
-  const prog=$('#prog'), acc={events:[],topics:[],tags:[]}; let read=0;
-  const handle=async(path,text)=>{ const k=kindFor(path); if(!k) return; try{ parseFile(path,k,JSON.parse(text),acc); read++; }catch(e){} };
+  const prog=$('#prog'), acc={events:[],topics:[],tags:[]}; let read=0; const perKind={}; const chatStore=new Map(); let chatFile=null, chatAll=null, chatStats={files:0,messages:0,shares:0,media:0,failed:0};
+  dlog('info',`Import started with ${files.length} file(s)`,files.map(f=>({name:LOG_REAL?f.name:f.name.replace(/[^/]+(?=\.\w+$)/,m=>m.slice(0,10)+'…'),sizeMB:+(f.size/1048576).toFixed(1),type:f.type||'(none)'})));
+  dlog('info','Browser support',{DecompressionStream:typeof DecompressionStream!=='undefined',BigInt:typeof BigInt!=='undefined',localStorage:(()=>{try{localStorage.setItem('_t','1');localStorage.removeItem('_t');return true;}catch(e){return false;}})()});
+  const handle=async(path,text)=>{
+    const k=kindFor(path); if(!k) return;
+    let json; try{ json=JSON.parse(text); }catch(e){ dlog('error',`JSON parse failed: ${P(path)}`,{chars:text.length,start:LOG_REAL?text.slice(0,120):maskStr(text.slice(0,120)),error:e.message}); return; }
+    const items=itemsOf(json), b={e:acc.events.length,t:acc.topics.length,h:acc.tags.length};
+    try{ parseFile(path,k,json,acc); }catch(e){ dlog('error',`Parser crashed on ${P(path)}`,{error:e.message,stack:String(e.stack).split('\n').slice(0,3)}); return; }
+    const got={events:acc.events.length-b.e,topics:acc.topics.length-b.t,hashtags:acc.tags.length-b.h};
+    const n=got.events+got.topics+got.hashtags+(acc.ccPosts||0); read++; perKind[k]=(perKind[k]||0)+n;
+    const labels=acc.lvLabels; acc.lvLabels=null; const miss=acc.lvMiss||0; acc.lvMiss=0;
+    const ccp=acc.ccPosts||0; acc.ccPosts=0;
+    const info={kind:k,chars:text.length,...(ccp?{postsWithCaptionOrHashtags:ccp}:{}),format:labels?'label_values (newer)':'classic',...(labels?{fieldLabels:labels,itemsWithoutAccount:miss}:{}),topLevel:Array.isArray(json)?`array(${json.length})`:`object keys: ${Object.keys(json).join(', ')}`,itemsFound:items.length,...got};
+    if (!items.length || !n){ info.firstItemShape=shape(items[0]??json); dlog('warn',`Recognised but nothing extracted: ${P(path)}`,info); }
+    else { info.firstItemShape=shape(items[0]); if(got.events) info.sampleAccounts=acc.events.slice(b.e,b.e+3).map(x=>maskName(x[1])); dlog('ok',`Read ${P(path)}`,info); }
+  };
   try{
     for (const f of files){
-      if (/\.zip$/i.test(f.name)||f.type.includes('zip')){
+      if (/\.zip$/i.test(f.name)||/zip/.test(f.type)){
         prog.textContent='Reading the ZIP…';
-        const ents=(await zipEntries(f)).filter(e=>/\.json$/i.test(e.name)&&kindFor(e.name));
-        let i=0; for (const en of ents){ i++; prog.textContent=`Reading ${i} of ${ents.length}: ${en.name.split('/').pop()}`; await handle(en.name,await zipText(f,en)); }
-      } else if (/\.json$/i.test(f.name)) { await handle(f.webkitRelativePath||f.name,await f.text()); }
+        const all=await zipEntries(f);
+        const ext={}, tops={}; for (const e of all){ const x=(e.name.match(/\.([a-z0-9]+)$/i)||[,'(folder or none)'])[1].toLowerCase(); ext[x]=(ext[x]||0)+1; const parts=e.name.split('/'); const top=P(parts.length>2?parts[0]+'/'+parts[1]:parts[0]); tops[top]=(tops[top]||0)+1; }
+        dlog('info',`ZIP has ${all.length} entries`,{byExtension:ext,topFolders:Object.fromEntries(Object.entries(tops).sort((a,b)=>b[1]-a[1]).slice(0,25))});
+        const json=all.filter(e=>/\.json$/i.test(e.name));
+        if (!json.length && ext.html) dlog('error','The export is in HTML format, not JSON. Request a new export with Format: JSON.');
+        if (!json.length && all.some(e=>/\.zip$/i.test(e.name))) dlog('warn','This ZIP contains other ZIP files. Unzip it once and choose the inner ZIP(s).');
+        dlog('info',`${json.length} JSON files. Which ones the importer will read:`,json.map(e=>`${kindFor(e.name)||'skip'.padEnd(7)} | ${P(e.name)} (${(e.comp/1024).toFixed(0)} KB)`));
+        const chatEnts=json.filter(e=>isChatPath(e.name)&&/messages\//i.test(e.name));
+        dlog('info',`${chatEnts.length} chat files found`,{folders:[...new Set(chatEnts.map(e=>(e.name.match(/messages\/([^/]+)\//i)||[])[1]))]});
+        let ci=0; for (const en of chatEnts){ ci++; if(ci%10===1) prog.textContent=`Reading chats ${ci} of ${chatEnts.length}…`;
+          try{ const j=JSON.parse(await zipText(f,en)); if(!isChatJson(j)){ chatStats.failed++; dlog('warn',`Not a chat file: ${P(en.name)}`,{shape:shape(j)}); continue; }
+            const r=addChat(en.name,j,acc,chatStore); chatStats.files++; chatStats.messages+=r.messages; chatStats.shares+=r.shares; chatStats.media+=r.media;
+          }catch(e){ chatStats.failed++; dlog('error',`Could not read chat file ${P(en.name)}`,{error:e.message}); } }
+        if (chatEnts.length){ chatFile=f; chatAll=all; }
+        const ents=json.filter(e=>kindFor(e.name));
+        let i=0; for (const en of ents){ i++; prog.textContent=`Reading ${i} of ${ents.length}: ${en.name.split('/').pop()}`;
+          let text; try{ text=await zipText(f,en); }catch(e){ dlog('error',`Could not unzip ${P(en.name)}`,{method:en.method,compressedBytes:en.comp,error:e.message}); continue; }
+          await handle(en.name,text); }
+        if (!acc.events.length && !acc.topics.length){ // look for activity-like files the patterns missed
+          const cand=[]; for (const en of json.filter(e=>!kindFor(e.name)&&e.comp<3e6&&!/messages\//i.test(e.name)).slice(0,120)){
+            try{ const t=await zipText(f,en); if(/string_list_data|string_map_data|"timestamp"/.test(t)){ let sh; try{ const j=JSON.parse(t); sh={topLevel:Array.isArray(j)?'array':Object.keys(j).join(', '),firstItemShape:shape(itemsOf(j)[0]??j)}; }catch(x){ sh='unparseable'; } cand.push({file:P(en.name),...sh}); } }catch(e){} }
+          dlog('warn','Nothing extracted. JSON files that look like activity data but were not matched:',cand.length?cand:'(none found)');
+        }
+      } else if (/\.json$/i.test(f.name)) { const txt=await f.text(); let j=null; try{ j=JSON.parse(txt); }catch(e){}
+        if (isChatJson(j)){ const r=addChat(f.webkitRelativePath||f.name,j,acc,chatStore); chatStats.files++; chatStats.messages+=r.messages; chatStats.shares+=r.shares; chatStats.media+=r.media; continue; }
+        await handle(f.webkitRelativePath||f.name,txt); if(!kindFor(f.webkitRelativePath||f.name)) dlog('warn',`File name not recognised, skipped: ${f.name}`); }
+      else dlog('warn',`Skipped ${f.name}: not a .zip or .json file`,{type:f.type});
     }
-  }catch(e){ prog.textContent=e.message||'Could not read that file.'; return; }
-  if (!acc.events.length && !acc.topics.length){ prog.textContent='No likes, saves, follows or topics were found. Check that the export is in JSON format and includes "Your Instagram activity" and "Connections".'; return; }
+  }catch(e){ dlog('error','Import stopped: '+(e.message||e),{stack:String(e.stack||'').split('\n').slice(0,3)}); prog.textContent=(e.message||'Could not read that file.'); return; }
+  if (chatStore.size||chatStats.files){ finishChats(chatStore,chatFile,chatAll);
+    dlog('ok',`Chats: ${CHATS.threads.length} conversations, ${chatStats.messages.toLocaleString()} messages`,{chatFiles:chatStats.files,failedFiles:chatStats.failed,sharedPostsCountedAsInterests:chatStats.shares,mediaAttachments:chatStats.media,youAppearAs:maskName(CHATS.me),note:'Message text is never written to this log.'}); renderChats(); }
+  else dlog('info','No chat files in this export. Tick "Messages" when exporting to include them.');
+  dlog('info','Totals by kind',{...perKind,files:read,interactions:acc.events.length,topics:acc.topics.length,hashtags:acc.tags.length});
+  if (!acc.events.length && !acc.topics.length && CHATS.threads.length){ prog.textContent=`Read ${CHATS.threads.length} chats. No likes, saves or follows were found, so the map was not updated.`; dlog('warn','Chats loaded, but no activity data for the map.'); setTimeout(()=>go('v-chats'),900); return; }
+  if (!acc.events.length && !acc.topics.length){ prog.textContent='Nothing could be read from this export. Check that it was exported in JSON format (not HTML) and includes "Your Instagram activity" and "Connections".'; dlog('error','Import finished with no usable data.'); return; }
   const wasSample=!S||!S.summary||S.summary.source==='sample';
-  const keep=S?{overrides:wasSample?{}:S.overrides,tangents:wasSample?[]:S.tangents,hidden:S.hidden,dial:S.dial,key:S.key}:{};
+  const keep=S?{ai:wasSample?{}:S.ai,aiSplit:true,overrides:wasSample?{}:S.overrides,tangents:wasSample?[]:S.tangents,hidden:S.hidden,dial:S.dial,key:S.key}:{};
   S=Object.assign({overrides:{},tangents:[],hidden:[],dial:1,key:''},keep,{summary:aggregate(acc,'export')});
-  const ok=save();
+  const ok=save(); if(!ok) dlog('warn','Saving to browser storage failed (full or blocked). Data will reset on reload.',{approxKB:Math.round(JSON.stringify(S).length/1024)});
+  recompute(true);
+  dlog('ok','Import complete',{accounts:Object.keys(S.summary.accounts).length,accountsWithPostContent:Object.keys(S.summary.cc||{}).length,matchedAutomatically:M.autoN,unsorted:M.unsorted.length,yourWorld:M.core.map(c=>CAT[c].label),monthsWithDates:Object.keys(S.summary.months).length,dateRange:S.summary.range.map(t=>t?new Date(t*1000).toISOString().slice(0,10):null)});
   prog.textContent=`Done. Read ${read} files: ${acc.events.length.toLocaleString()} interactions with ${Object.keys(S.summary.accounts).length.toLocaleString()} accounts.`+(ok?'':' Storage is full or blocked, so this view will reset when you close the app.');
-  recompute(true); toast('Your interest map is ready.'); setTimeout(()=>go('v-map'),900);
+  toast('Your interest map is ready.'); setTimeout(()=>go('v-map'),900);
 }
 
 /* ================= Sample data ================= */
@@ -483,19 +680,29 @@ function sampleSummary(){
 let M=null; // computed
 const ymNow=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');};
 const accW=a=>a.reduce((s,v,i)=>s+v*KW[i],0);
-function catsOf(u){ const o=S.overrides[u]; if(o) return o[0]==='_ignore'?null:o; return matchName(u); }
+function catsInfo(u){
+  const o=S.overrides[u]; if(o) return o[0]==='_ignore'?{cats:null,src:'you'}:{cats:o,src:'you'};
+  const ai=S.ai&&S.ai[u]; if(ai&&ai[0]!=='none') return {cats:ai,src:'ai'};
+  const n=matchName(u); if(n.length) return {cats:n,src:'name'};
+  const cc=S.summary.cc&&S.summary.cc[u];
+  if (cc){ const e=Object.entries(cc).sort((a,b)=>b[1]-a[1]); const top=e[0][1]; const c=e.filter(x=>x[1]>=Math.max(1,top*0.5)).slice(0,2).map(x=>x[0]); if(c.length) return {cats:c,src:'posts'}; }
+  return {cats:[],src:ai?'ai-unclear':'none'};
+}
+function catsOf(u){ return catsInfo(u).cats; }
+let M_unclear=0;
 function recompute(rebuild){
-  const sm=S.summary, score={}, acctCats={}, unsorted=[]; let autoN=0;
+  const sm=S.summary, score={}, acctCats={}, unsorted=[]; let autoN=0; M_unclear=0;
   for (const id in CAT) score[id]=0;
   for (const [u,a] of Object.entries(sm.accounts)){
     const w=accW(a), cs=catsOf(u); acctCats[u]=cs;
     if (cs===null) continue;
-    if (!cs.length){ unsorted.push([u,w,a]); continue; }
+    if (!cs.length){ if(S.ai&&S.ai[u]) { M_unclear++; continue; } unsorted.push([u,w,a]); continue; }
     if (!S.overrides[u]) autoN++;
     for (const c of cs) score[c]+=w/cs.length;
   }
   for (const t of sm.topics) { const cs=matchText(t); for (const c of cs) score[c]+=6/cs.length; }
   for (const t of sm.tags) { const cs=matchText(t); for (const c of cs) score[c]+=3/cs.length; }
+  for (const [c,n] of Object.entries(sm.self||{})) if (score[c]!==undefined) score[c]+=2*n;
   const total=Object.values(score).reduce((a,b)=>a+b,0)||1;
   const ranked=Object.keys(score).filter(c=>score[c]>0).sort((a,b)=>score[b]-score[a]);
   let core=ranked.filter(c=>score[c]/total>=0.025).slice(0,12); if (core.length<3) core=ranked.slice(0,Math.min(3,ranked.length));
@@ -509,7 +716,7 @@ function recompute(rebuild){
   // lock-in: last 3 months
   const lw={}; let lt=0; for (const ym of months.slice(-3)) for (const [c,w] of Object.entries(monthCat[ym]||{})){ lw[c]=(lw[c]||0)+w; lt+=w; }
   const top3=Object.values(lw).sort((a,b)=>b-a).slice(0,3).reduce((a,b)=>a+b,0);
-  M={score,total,ranked,core,acctCats,unsorted:unsorted.sort((a,b)=>b[1]-a[1]),autoN,breadth,monthCat,lock:lt?top3/lt:0,hidden};
+  M={unclear:M_unclear,score,total,ranked,core,acctCats,unsorted:unsorted.sort((a,b)=>b[1]-a[1]),autoN,breadth,monthCat,lock:lt?top3/lt:0,hidden};
   ensureTangent();
   // tiers
   const coreSet=new Set(core), tier={};
@@ -749,43 +956,93 @@ function renderTangent(){
 }
 let sortQ='';
 const catOptions=sel=>`<option value="">Choose an interest…</option><option value="_ignore"${sel==='_ignore'?' selected':''}>Ignore (friends, personal)</option>`+Object.values(CAT).sort((a,b)=>a.label.localeCompare(b.label)).map(c=>`<option value="${c.id}"${sel===c.id?' selected':''}>${esc(c.label)}</option>`).join('');
+let sortTab='need', sortCatF='', sortLimit=100;
+const SRC={you:'Your choice',ai:'AI',name:'From name',posts:'From their posts','ai-unclear':'AI: unclear',none:'Not sorted'};
+const fmtAct=a=>[a[0]&&`${a[0]} likes`,a[1]&&`${a[1]} saves`,a[2]&&`${a[2]} comments`,a[3]&&`${a[3]} watched`,a[4]&&`${a[4]} viewed`,a[6]&&`${a[6]} shared`,a[7]&&`searched ${a[7]}×`,a[5]&&'following'].filter(Boolean).join(' · ');
 function renderSort(){
-  const un=M.unsorted;
-  $('#sortDesc').textContent=`${M.autoN.toLocaleString()} accounts were matched automatically. ${un.length.toLocaleString()} could not be read from the name alone. Sort the ones you engage with most; your map updates as you go.`;
+  const un=M.unsorted, all=S.summary.accounts;
+  $('#sortDesc').textContent=`${Object.keys(all).length.toLocaleString()} accounts. ${M.autoN.toLocaleString()} sorted automatically, ${un.length.toLocaleString()} waiting${M.unclear?`, ${M.unclear.toLocaleString()} the AI found unclear`:''}.`;
   const badge=$('#sortBadge'); badge.hidden=!un.length; badge.textContent=un.length>99?'99+':un.length;
+  $('#tabNeed').classList.toggle('on',sortTab==='need'); $('#tabAll').classList.toggle('on',sortTab==='all');
+  $('#tabNeed').textContent=`Needs sorting (${un.length.toLocaleString()})`;
+  const cf=$('#sortCat'); cf.hidden=sortTab!=='all';
+  if (sortTab==='all' && !cf.options.length) cf.innerHTML=`<option value="">All interests</option><option value="_none">No interest yet</option>`+Object.values(CAT).sort((a,b)=>a.label.localeCompare(b.label)).map(c=>`<option value="${c.id}">${esc(c.label)}</option>`).join('');
+  cf.value=sortCatF;
   const q=sortQ.toLowerCase();
-  let list=q? Object.keys(S.summary.accounts).filter(u=>u.toLowerCase().includes(q)).map(u=>[u,accW(S.summary.accounts[u]),S.summary.accounts[u]]).sort((a,b)=>b[1]-a[1]) : un;
-  list=list.slice(0,60);
-  const fmt=a=>[a[0]&&`${a[0]} likes`,a[1]&&`${a[1]} saves`,a[2]&&`${a[2]} comments`,a[3]&&`${a[3]} watched`,a[5]&&'following'].filter(Boolean).join(' · ')||'viewed';
-  $('#sortList').innerHTML=list.length? list.map(([u,w,a])=>{ const cur=S.overrides[u]?.[0]||(M.acctCats[u]||[])[0]||'';
-    return `<div class="acct"><div class="nm"><a href="https://www.instagram.com/${encodeURIComponent(u)}/" target="_blank" rel="noopener">@${esc(u)}</a></div><div class="meta mono">${Math.round(w)} pts</div><div class="meta" style="grid-column:1/-1">${fmt(a)}</div><select aria-label="Interest for @${esc(u)}" data-u="${esc(u)}" id="sel-${hash(u)}">${catOptions(cur)}</select></div>`; }).join('')
-    : `<div class="empty">${q?'No accounts match that search.':'Everything is sorted. Nice.'}</div>`;
-  $('#sortList').querySelectorAll('select').forEach(s=>s.addEventListener('change',()=>{ const u=s.dataset.u; if(s.value) S.overrides[u]=[s.value]; else delete S.overrides[u]; save(); toast(s.value==='_ignore'?`@${u} ignored`:s.value?`@${u} → ${CAT[s.value].label}`:'Cleared'); recompute(false); }));
+  let list = sortTab==='need' ? un : Object.keys(all).map(u=>[u,accW(all[u]),all[u]]).sort((a,b)=>b[1]-a[1]);
+  if (q) list=list.filter(x=>x[0].toLowerCase().includes(q));
+  const rankOf=new Map(); if (sortTab==='all') list.forEach((x,i)=>rankOf.set(x[0],i+1));
+  if (sortTab==='all' && sortCatF) list=list.filter(([u])=>{ const c=catsInfo(u).cats; return sortCatF==='_none'?!(c&&c.length):(c||[]).includes(sortCatF); });
+  const total=list.length; list=list.slice(0,sortLimit);
+  $('#sortList').innerHTML=list.length? list.map(([u,w,a])=>{ const info=catsInfo(u), cur=S.overrides[u]?.[0]||'';
+    const pills=info.cats===null?'<span class="pill2 none">Ignored</span>':info.cats.length?info.cats.map(c=>`<span class="pill2">${esc(CAT[c].label)}</span>`).join(''):'<span class="pill2 none">No interest</span>';
+    return `<div class="acct"><div class="nm">${sortTab==='all'?`<span class="rank">#${rankOf.get(u)}</span>`:''}<a href="https://www.instagram.com/${encodeURIComponent(u)}/" target="_blank" rel="noopener">@${esc(u)}</a></div><div class="meta mono">${Math.round(w).toLocaleString()} pts</div>
+      <div class="meta" style="grid-column:1/-1">${fmtAct(a)}</div>
+      <div class="cats">${pills}<span class="srcl">${SRC[info.src]}</span></div>
+      <select aria-label="Change interest for @${esc(u)}" data-u="${esc(u)}" id="sel-${hash(u)}"><option value="">${info.src==='you'?'Undo my choice':'Change interest…'}</option><option value="_ignore"${cur==='_ignore'?' selected':''}>Ignore (friends, personal)</option>${Object.values(CAT).sort((a,b)=>a.label.localeCompare(b.label)).map(c=>`<option value="${c.id}"${cur===c.id?' selected':''}>${esc(c.label)}</option>`).join('')}</select></div>`; }).join('')
+    + (total>list.length?`<div style="text-align:center;padding:12px 0 4px"><button class="btn" id="sortMore">Show more (${(total-list.length).toLocaleString()} left)</button></div>`:'')
+    : `<div class="empty">${q||sortCatF?'No accounts match.':sortTab==='need'?'Everything is sorted. See them all under All accounts.':'No accounts yet.'}</div>`;
+  $('#sortMore')?.addEventListener('click',()=>{ sortLimit+=200; renderSort(); });
+  $('#sortList').querySelectorAll('select').forEach(sel=>sel.addEventListener('change',()=>{ const u=sel.dataset.u; if(sel.value) S.overrides[u]=[sel.value]; else delete S.overrides[u]; save();
+    toast(sel.value==='_ignore'?`@${u} ignored`:sel.value?`@${u} → ${CAT[sel.value].label}`:`@${u} is back to automatic`); recompute(false); }));
   renderAI();
 }
-$('#sortSearch').addEventListener('input',e=>{ sortQ=e.target.value.trim(); renderSort(); });
+$('#tabNeed').addEventListener('click',()=>{ sortTab='need'; sortLimit=100; renderSort(); });
+$('#tabAll').addEventListener('click',()=>{ sortTab='all'; sortLimit=100; renderSort(); });
+$('#sortCat').addEventListener('change',e=>{ sortCatF=e.target.value; sortLimit=100; renderSort(); });
+$('#sortSearch').addEventListener('input',e=>{ sortQ=e.target.value.trim(); sortLimit=100; renderSort(); });
+let aiStatus='', aiBusy=false, aiStop=false;
 function renderAI(){
-  const n=Math.min(150,M.unsorted.length);
+  if (aiBusy && document.getElementById('aiStopBtn')){ setAI(aiStatus); return; } // keep the Stop button steady while sorting
+  const n=M.unsorted.filter(x=>!(S.ai&&S.ai[x[0]])).length;
   $('#aiCard').innerHTML=`<div style="font-weight:600">Sort with AI (optional)</div>
-    <div class="note">Sends only the account names (not your activity) to Anthropic's API with your own key, which stays on this phone. Works in the installed app; some in-app browsers block it.</div>
+    <div class="note">Sends only account names (not your activity or chats) to Anthropic's API with your own key, which stays on this device. Works in the installed app or a local copy; the page inside Claude blocks it.</div>
     <input class="field" id="aiKey" type="password" autocomplete="off" placeholder="Anthropic API key (sk-ant-…)" value="${esc(S.key||'')}" aria-label="Anthropic API key">
-    <div class="acts"><button class="btn c" id="aiRun" ${n?'':'disabled'}>Sort ${n} accounts with AI</button></div><div class="prog" id="aiProg" aria-live="polite" style="min-height:0"></div>`;
+    <input class="field" id="aiWs" autocomplete="off" placeholder="Workspace ID (only if your key needs one)" value="${esc(S.ws||'')}" aria-label="Workspace ID">
+    <div class="acts">${aiBusy?`<button class="btn d" id="aiStopBtn">Stop</button>`:`<button class="btn c" id="aiRun" ${n?'':'disabled'}>Sort all ${n.toLocaleString()} accounts with AI</button>`}</div>
+    <div class="prog" id="aiProg" aria-live="polite" style="min-height:0">${esc(aiStatus)}</div>`;
   $('#aiKey').addEventListener('change',e=>{ S.key=e.target.value.trim(); save(); });
-  $('#aiRun').addEventListener('click',runAI);
+  $('#aiWs').addEventListener('change',e=>{ S.ws=e.target.value.trim(); save(); });
+  $('#aiRun')?.addEventListener('click',runAI);
+  $('#aiStopBtn')?.addEventListener('click',()=>{ aiStop=true; aiStatus='Stopping after this batch…'; renderAI(); });
+}
+function setAI(msg){ aiStatus=msg; const el=$('#aiProg'); if(el) el.textContent=msg; }
+async function aiBatch(names,key){
+  const ids=Object.keys(CAT), headers={'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};
+  if (S.ws) headers['anthropic-workspace-id']=S.ws;
+  const body={model:'claude-haiku-5-5',max_tokens:8000,messages:[{role:'user',content:`Classify each Instagram account username by what it most likely posts. Allowed category ids: ${ids.join(', ')}. Use "none" for personal accounts or when you cannot tell. Reply with only a JSON object mapping each username exactly as given to an array of at most 2 ids.\n\nUsernames:\n${names.join('\n')}`}]};
+  dlog('info',`AI sort: sending ${names.length} account names`,{endpoint:'api.anthropic.com/v1/messages',model:body.model,origin:location.origin,keyLooksValid:/^sk-ant-/.test(key),keyLength:key.length,workspaceHeader:!!S.ws});
+  const t0=performance.now(); let res;
+  try{ res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers,body:JSON.stringify(body)}); }
+  catch(e){ dlog('error','AI sort: the request never reached the API',{error:String(e),likelyCause:location.protocol==='file:'?'Opened as a local file. Some browsers block requests from file:// pages; use the GitHub Pages copy instead.':'Blocked by the browser, an extension, or no internet connection.'}); throw new Error(location.protocol==='file:'?'The request was blocked. Open the app from its website instead of a local file.':'The request was blocked. Check your internet connection or browser extensions.'); }
+  const raw=await res.text(); const ms=Math.round(performance.now()-t0);
+  if (!res.ok){ let msg=raw; try{ msg=JSON.parse(raw).error?.message||raw; }catch(e){}
+    dlog('error',`AI sort: API returned ${res.status} after ${ms} ms`,{message:msg.slice(0,400),requestId:res.headers.get('request-id')});
+    throw new Error(res.status===401?'The API key was rejected. Check it and try again.':res.status===400&&/workspace/i.test(msg)?'This key needs a workspace. Create a key inside a workspace, or paste the workspace ID.':res.status===402||/credit|billing/i.test(msg)?'Your API account has no credit. Add credit in the Console.':res.status===404?'The model was not found for this key.':`API error ${res.status}: ${msg.slice(0,140)}`); }
+  let data; try{ data=JSON.parse(raw); }catch(e){ dlog('error','AI sort: response was not JSON',{start:raw.slice(0,200)}); throw new Error('Unexpected reply from the API.'); }
+  const text=(data.content||[]).map(c=>c.text||'').join('');
+  dlog('ok',`AI sort: reply in ${ms} ms`,{stopReason:data.stop_reason,inputTokens:data.usage?.input_tokens,outputTokens:data.usage?.output_tokens,replyChars:text.length});
+  let js; try{ js=JSON.parse(text.slice(text.indexOf('{'),text.lastIndexOf('}')+1)); }catch(e){ dlog('error','AI sort: could not read the JSON in the reply',{stopReason:data.stop_reason,replyStart:maskStr(text.slice(0,200))}); throw new Error('Could not read the AI reply. Try again.'); }
+  const lower=new Map(names.map(n=>[n.toLowerCase(),n])); let sorted=0, none=0, unknownName=0, badIds=0;
+  for (const [k,cs] of Object.entries(js)){ const u=lower.get(String(k).replace(/^@/,'').toLowerCase()); if(!u){ unknownName++; continue; }
+    const ok=(Array.isArray(cs)?cs:[cs]).filter(c=>CAT[c]); if((Array.isArray(cs)?cs:[cs]).some(c=>c!=='none'&&!CAT[c])) badIds++;
+    S.ai=S.ai||{}; if (ok.length){ S.ai[u]=ok.slice(0,2); sorted++; } else { S.ai[u]=['none']; none++; } }
+  dlog('info','AI sort: applied',{sorted,personalOrUnclear:none,namesNotMatched:unknownName,repliesWithUnknownIds:badIds,missingFromReply:names.length-sorted-none});
+  return {sorted,none};
 }
 async function runAI(){
-  const key=$('#aiKey').value.trim(); S.key=key; save(); const pr=$('#aiProg');
-  if (!key){ pr.textContent='Paste your API key first.'; return; }
-  const names=M.unsorted.slice(0,150).map(x=>x[0]); const ids=Object.keys(CAT);
-  pr.textContent=`Asking about ${names.length} accounts…`;
+  const key=($('#aiKey').value||'').trim(); S.key=key; S.ws=($('#aiWs').value||'').trim(); save();
+  if (!key){ setAI('Paste your API key first.'); return; }
+  aiBusy=true; aiStop=false; let done=0, sorted=0, none=0; const total=M.unsorted.length; renderAI();
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-haiku-5-5',max_tokens:6000,messages:[{role:'user',content:`Classify each Instagram account username by what it most likely posts. Allowed category ids: ${ids.join(', ')}. Use "none" for personal accounts or when you cannot tell. Reply with only a JSON object mapping each username to an array of at most 2 ids.\n\nUsernames:\n${names.join('\n')}`}]})});
-    if (!res.ok){ const t=await res.text(); throw new Error(res.status===401?'That API key was rejected.':`The API returned an error (${res.status}). ${t.slice(0,120)}`); }
-    const data=await res.json(), text=(data.content||[]).map(c=>c.text||'').join(''), js=JSON.parse(text.slice(text.indexOf('{'),text.lastIndexOf('}')+1));
-    let n=0; for (const [u,cs] of Object.entries(js)){ if(!S.summary.accounts[u]||S.overrides[u]) continue; const ok=(cs||[]).filter(c=>CAT[c]); if(ok.length){ S.overrides[u]=ok.slice(0,2); n++; } }
-    save(); pr.textContent=`Sorted ${n} accounts. The rest looked personal or unclear.`; recompute(false);
-  }catch(e){ pr.textContent=(e instanceof TypeError)?'The request was blocked. This works in the installed app with an internet connection.':(e.message||'Something went wrong.'); }
+    while (!aiStop){ const names=M.unsorted.filter(x=>!(S.ai&&S.ai[x[0]])).slice(0,150).map(x=>x[0]); if(!names.length) break;
+      setAI(`Sorting… ${done.toLocaleString()} of ${total.toLocaleString()} done`);
+      const r=await aiBatch(names,key); done+=names.length; sorted+=r.sorted; none+=r.none;
+      save(); recompute(false);
+      if (!r.sorted && !r.none){ dlog('warn','AI sort: a batch changed nothing, stopping to avoid a loop.'); break; } }
+    aiStatus=`Done. ${sorted.toLocaleString()} accounts sorted, ${none.toLocaleString()} looked personal or unclear and were left as unclear (still counted, just without an interest).`;
+  }catch(e){ aiStatus=e.message||'Something went wrong. Try again.'; }
+  aiBusy=false; recompute(false);
 }
 function renderInsights(){
   const sm=S.summary, b=M.breadth, first=b.length?b[0][1]:0, last=b.length?b[b.length-1][1]:0;
@@ -809,7 +1066,7 @@ function renderInsights(){
   $('#insTop').innerHTML=M.ranked.slice(0,10).map(c=>`<div class="lab"><span class="dot ${M.core.includes(c)?'dg':'dy'}"></span><span>${esc(CAT[c].label)}</span></div><div class="num">${Math.round(M.score[c]/M.total*100)}%</div><div class="trk"><i style="width:${Math.min(100,M.score[c]/mx*100)}%"></i></div>`).join('')||'<div class="empty">No interests found yet.</div>';
   $('#insTopics').innerHTML=sm.topics.length?`<div class="tags">${sm.topics.slice(0,40).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div><div class="note" style="margin-top:8px">These are the topics Instagram itself has assigned to you.</div>`:'<div class="empty">Your export had no topics file. Include "Preferences" or "Ads information" next time.</div>';
   const c=sm.counts, d=t=>t?new Date(t*1000).toLocaleDateString(undefined,{month:'short',year:'numeric'}):'';
-  $('#insSrc').innerHTML=`<div class="hbar" style="grid-template-columns:minmax(0,1fr) auto">${[['Liked posts',c.like],['Saved posts',c.save],['Comments',c.comment],['Videos watched',c.watch],['Posts viewed',c.view],['Accounts followed',c.follow],['Instagram topics',c.topic],['Hashtags',c.hashtag]].map(([k,v])=>`<div>${k}</div><div class="num">${(v||0).toLocaleString()}</div>`).join('')}</div><div class="note" style="margin-top:8px">${sm.range[0]?`Activity from ${d(sm.range[0])} to ${d(sm.range[1])}. `:''}Messages are never read.</div>`;
+  $('#insSrc').innerHTML=`<div class="hbar" style="grid-template-columns:minmax(0,1fr) auto">${[['Liked posts',c.like],['Shared or reposted',c.share],['Profiles searched',c.search],['Saved posts',c.save],['Comments',c.comment],['Videos watched',c.watch],['Posts viewed',c.view],['Accounts followed',c.follow],['Instagram topics',c.topic],['Hashtags',c.hashtag]].map(([k,v])=>`<div>${k}</div><div class="num">${(v||0).toLocaleString()}</div>`).join('')}</div><div class="note" style="margin-top:8px">${sm.range[0]?`Activity from ${d(sm.range[0])} to ${d(sm.range[1])}. `:''}Messages are never read.</div>`;
 }
 function renderSrc(){
   const sm=S.summary, el=$('#srcLine');
@@ -831,9 +1088,70 @@ $('#btnClear').addEventListener('click',e=>{ const b=e.currentTarget;
   if (Date.now()-clearArm>4000){ clearArm=Date.now(); b.textContent='Tap again to delete'; setTimeout(()=>b.textContent='Delete my data',4000); return; }
   try{ localStorage.removeItem(KEY); }catch(x){} S={overrides:{},tangents:[],hidden:[],dial:1,key:'',summary:sampleSummary()}; recompute(true); b.textContent='Delete my data'; toast('Your data was deleted. Showing sample data.'); });
 
+// chats UI
+const AVC=['#3DFF8A','#FFD93D','#FF4FD8','#3DE8FF','#9b8cff','#ff9e5e'];
+const fmtDate=ms=>ms?new Date(ms).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}):'';
+const fmtTime=ms=>new Date(ms).toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
+let chatQ='', openThread=null, shown=0;
+function preview(m){ if(!m) return ''; if(m.c) return m.c; if(m.sh) return 'Shared a post'; if(m.md) return m.md[0][0]==='photo'?'Photo':m.md[0][0]==='video'?'Video':m.md[0][0]==='audio'?'Voice message':'GIF'; if(m.call!=null) return 'Call'; return ''; }
+function renderChats(){
+  const th=CHATS.threads, el=$('#chatList');
+  if (!th.length){ el.innerHTML='<div class="empty">No chats loaded yet. Import an export that includes Messages.</div>'; return; }
+  const total=th.reduce((a,t)=>a+t.msgs.length,0), first=Math.min(...th.map(t=>t.msgs[0]?.t||Infinity));
+  $('#chatsDesc').textContent=`${th.length.toLocaleString()} conversations, ${total.toLocaleString()} messages, since ${fmtDate(first)}.`;
+  const q=chatQ.toLowerCase();
+  const rows=th.map(t=>{ if(!q) return [t,0]; const nameHit=t.name.toLowerCase().includes(q); const hits=t.msgs.reduce((a,m)=>a+(m.c&&m.c.toLowerCase().includes(q)?1:0),0); return (nameHit||hits)?[t,hits]:null; }).filter(Boolean).slice(0,200);
+  el.innerHTML=rows.length?rows.map(([t,h],i)=>{ const last=t.msgs[t.msgs.length-1]; const col=AVC[hash(t.id)%AVC.length];
+    return `<button class="thread" data-id="${esc(t.id)}"><span class="av" style="background:${col}">${esc((t.name[0]||'?').toUpperCase())}</span><span class="tx"><span class="tn" style="display:block">${esc(t.name)}</span><span class="tm" style="display:block">${h?`${h} matching message${h>1?'s':''}`:esc((last&&last.s===CHATS.me?'You: ':'')+preview(last))}</span></span><span class="tc">${fmtDate(t.last)}<br>${t.msgs.length.toLocaleString()} msgs</span></button>`; }).join(''):'<div class="empty">No chats match that search.</div>';
+  el.querySelectorAll('.thread').forEach(b=>b.addEventListener('click',()=>openChat(b.dataset.id)));
+}
+$('#chatSearch').addEventListener('input',e=>{ chatQ=e.target.value.trim(); renderChats(); });
+function openChat(id){
+  const t=CHATS.threads.find(x=>x.id===id); if(!t) return; openThread=t; shown=Math.min(300,t.msgs.length);
+  go('v-chat'); $('#chatTitle').textContent=t.name; $('#chatSub').textContent=`${t.msgs.length.toLocaleString()} messages · ${fmtDate(t.msgs[0]?.t)} to ${fmtDate(t.last)}`; renderThread(true);
+}
+function renderThread(toEnd){
+  const t=openThread, box=$('#msgs'), group=t.people.length>2, q=chatQ.toLowerCase(), start=t.msgs.length-shown; let h='', lastDay='';
+  if (start>0) h+=`<button class="btn mini" id="older" style="align-self:center">Show ${Math.min(300,start)} earlier messages</button>`;
+  for (let i=start;i<t.msgs.length;i++){ const m=t.msgs[i], day=fmtDate(m.t); if(day!==lastDay){ h+=`<div class="day">${day}</div>`; lastDay=day; }
+    const me=m.s===CHATS.me, hit=q&&m.c&&m.c.toLowerCase().includes(q);
+    let body=m.unsent?'<i style="color:var(--dim)">Message unsent</i>':esc(m.c||'');
+    if (m.call!=null) body+=`<i>${m.call?`Call, ${Math.round(m.call/60)} min`:'Missed call'}</i>`;
+    if (m.sh) body+=`<a class="sh" href="${esc(m.sh.link)}" target="_blank" rel="noopener">${m.sh.owner?`Post by @${esc(m.sh.owner)}`:'Shared link'}${m.sh.text?': '+esc(m.sh.text.slice(0,90)):''}</a>`;
+    if (m.md) body+=m.md.map((x,k)=>`<button class="btn mini" data-media="${i}|${k}" style="margin-top:6px">${x[0]==='photo'?'Show photo':x[0]==='video'?'Play video':x[0]==='audio'?'Play voice message':'Show GIF'}</button>`).join(' ');
+    h+=`<div class="msg${me?' me':''}${hit?' hit':''}">${group&&!me?`<div class="who">${esc(m.s)}</div>`:''}${body}<div class="meta">${fmtTime(m.t)}${m.r?' · '+esc(m.r):''}</div></div>`; }
+  const prevH=box.scrollHeight; box.innerHTML=h; box.scrollTop=toEnd?box.scrollHeight:box.scrollHeight-prevH;
+  $('#older')?.addEventListener('click',()=>{ shown=Math.min(t.msgs.length,shown+300); renderThread(false); });
+  box.querySelectorAll('[data-media]').forEach(b=>b.addEventListener('click',()=>showMedia(b)));
+}
+async function showMedia(btn){
+  const [i,k]=btn.dataset.media.split('|').map(Number), [type,uri]=openThread.msgs[i].md[k];
+  if (!CHATS.src||!CHATS.byName){ btn.textContent='Media is only available when you import the ZIP'; return; }
+  let en=CHATS.byName.get(uri); if(!en){ for (const [n,e] of CHATS.byName) if(n.endsWith('/'+uri)||uri.endsWith(n.split('/').slice(1).join('/'))){ en=e; break; } }
+  if (!en){ btn.textContent='Not in this export (media was left out)'; btn.disabled=true; dlog('warn','Chat media not found in the ZIP',{type,uriShape:maskStr(uri)}); return; }
+  try{ btn.textContent='Loading…';
+    const h=new DataView(await CHATS.src.slice(en.lo,en.lo+30).arrayBuffer()), st=en.lo+30+h.getUint16(26,true)+h.getUint16(28,true);
+    let blob=CHATS.src.slice(st,st+en.comp); if(en.method===8) blob=await new Response(blob.stream().pipeThrough(new DecompressionStream('deflate-raw'))).blob();
+    const mime=/\.mp4$/i.test(uri)?'video/mp4':/\.(m4a|aac)$/i.test(uri)?'audio/mp4':/\.gif$/i.test(uri)?'image/gif':/\.png$/i.test(uri)?'image/png':/\.webp$/i.test(uri)?'image/webp':'image/jpeg';
+    const url=URL.createObjectURL(new Blob([blob],{type:mime}));
+    const el=document.createElement(type==='video'?'video':type==='audio'?'audio':'img'); el.src=url; if(type!=='photo'&&type!=='gif'){ el.controls=true; } else el.alt='Photo from chat';
+    btn.replaceWith(el);
+  }catch(e){ btn.textContent='Could not open this file'; dlog('error','Chat media failed to load',{type,error:e.message}); }
+}
+function threadText(t){ return `${t.name}\n${'='.repeat(Math.min(40,t.name.length))}\n`+t.msgs.map(m=>`[${new Date(m.t).toLocaleString()}] ${m.s===CHATS.me?'You':m.s}: ${m.unsent?'(unsent)':m.c||''}${m.sh?` [shared: ${m.sh.link}]`:''}${m.md?` [${m.md.map(x=>x[0]).join(', ')}]`:''}`).join('\n'); }
+$('#chatBack').addEventListener('click',()=>go('v-chats'));
+$('#chatCopy').addEventListener('click',()=>{ const t=threadText(openThread); try{ navigator.clipboard.writeText(t).then(()=>toast('Conversation copied.'),()=>toast('Copy was blocked here.')); }catch(e){ toast('Copy was blocked here.'); } });
+$('#chatSave').addEventListener('click',()=>{ try{ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([threadText(openThread)],{type:'text/plain'})); a.download=(openThread.name.replace(/[^\w\- ]+/g,'').trim()||'chat')+'.txt'; document.body.appendChild(a); a.click(); a.remove(); toast('Saving the conversation as a text file.'); }catch(e){ toast('Saving is blocked here. Use Copy.'); } });
+document.querySelector('.nav button[data-v="v-chats"]').addEventListener('click',renderChats);
+
 // boot
+dlog('info','App started',{version:'1.0',standalone:!!window.TANGENT_STANDALONE,screen:`${innerWidth}x${innerHeight}`});
 if (!S||!S.summary){ S={overrides:{},tangents:[],hidden:[],dial:1,key:'',summary:sampleSummary()}; }
-S.overrides=S.overrides||{}; S.tangents=S.tangents||[]; S.hidden=S.hidden||[]; if(S.dial==null) S.dial=1;
+S.overrides=S.overrides||{}; S.ai=S.ai||{};
+if (!S.aiSplit){ // earlier versions stored AI answers as your own choices and hid "unclear" accounts; move them back
+  const o=Object.entries(S.overrides); if (o.length>300){ for (const [u,c] of o) S.ai[u]=c[0]==='_ignore'?['none']:c; S.overrides={}; dlog('info',`Moved ${o.length} earlier AI answers out of your own choices; unclear accounts are visible again.`); }
+  S.aiSplit=true; save(); }
+S.tangents=S.tangents||[]; S.hidden=S.hidden||[]; if(S.dial==null) S.dial=1;
 recompute(true); resize();
 if ('serviceWorker' in navigator && window.TANGENT_STANDALONE){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 </script>
